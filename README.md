@@ -2,17 +2,7 @@
 
 ![Marvel Multiverse Holo-Database Banner](images/my_banner.jpg)
 
-<p align="center">
-  <a href="https://marvelmultiversetimeline.netlify.app/" target="_blank">
-    <img src="https://img.shields.io/badge/Status-Deployed-green?style=for-the-badge&logo=vercel" alt="Deployment Status">
-  </a>
-  <a href="https://github.com/bonykoshy/mcu.timeline/stargazers">
-    <img src="https://img.shields.io/github/stars/bonykoshy/mcu.timeline?style=for-the-badge&logo=github" alt="GitHub stars">
-  </a>
-  <a href="https://github.com/bonykoshy/mcu.timeline/forks">
-    <img src="https://img.shields.io/github/forks/bonykoshy/mcu.timeline?style=for-the-badge&logo=github" alt="GitHub forks">
-  </a>
-</p>
+[![Netlify Status](https://api.netlify.com/api/v1/badges/25155d2c-8c54-4d17-a543-65234e4d4b7b/deploy-status)](https://app.netlify.com/projects/marvelmultiversetimeline/deploys)
 
 ---
 
