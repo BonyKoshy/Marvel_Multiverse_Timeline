@@ -2,7 +2,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     // --- IMPORTANT ---
     // PASTE YOUR GEMINI API KEY HERE
-    const GEMINI_API_KEY = "AIzaSyBryyG_22mU67yjUjZzAH8VTPFiux__2CI";
+    
     
     // --- STATE MANAGEMENT ---
     let decadeChart, typeChart;
