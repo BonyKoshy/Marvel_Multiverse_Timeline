@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 # 🛰️ MARVEL MULTIVERSE TIMELINE
-=======
-# 🛰️ MARVEL MULTIVERSE TIMELINE 
->>>>>>> b7b55a1661ec835e2a19c43eb7eaa0125091fa95
 
 ![Marvel Multiverse Holo-Database Banner](images/my_banner.jpg)
 
@@ -44,11 +40,7 @@ This interface is designed to:
 
 Visualize your watch history with **Stark-tech dashboards**:
 
-<<<<<<< HEAD
 - Releases by **Decade** - Media Type **Breakdown** ![iron man HUD](images/hud.avif)
-=======
-![iron man HUD](images/hud.avif)
->>>>>>> b7b55a1661ec835e2a19c43eb7eaa0125091fa95
 
 ---
 
@@ -65,14 +57,11 @@ The Holo-Database maps **X-Men’s Earth-10005**, _What If...?_, and even **vari
 
 This project was engineered with:
 
-<<<<<<< HEAD
 - 🖥️ **HTML5** → core structure
 - 🎨 **Tailwind CSS** → Stark-speed styling
 - 📊 **Chart.js** → Timeline analytics
 - 💻 **Vanilla JavaScript** → Holo-logic
 
-=======
->>>>>>> b7b55a1661ec835e2a19c43eb7eaa0125091fa95
 ![iron man coding](images/coding.jpg)
 
 ---
