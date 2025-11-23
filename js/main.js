@@ -1,9 +1,23 @@
 // js/main.js
+<<<<<<< HEAD
 document.addEventListener("DOMContentLoaded", () => {
   // --- STATE MANAGEMENT ---
   let decadeChart, typeChart;
   let activeTypeFilter = "all";
   let watchedItems = JSON.parse(localStorage.getItem("watchedItems")) || {};
+=======
+document.addEventListener('DOMContentLoaded', () => {
+    // --- IMPORTANT ---
+    // PASTE YOUR GEMINI API KEY HERE
+    
+    
+    // --- STATE MANAGEMENT ---
+    let decadeChart, typeChart;
+    let activeTypeFilter = 'all';
+    let watchedItems = JSON.parse(localStorage.getItem('watchedItems')) || {};
+    let connectionMode = false;
+    let selectedForConnection = [];
+>>>>>>> b7b55a1661ec835e2a19c43eb7eaa0125091fa95
 
   // --- SELECTORS ---
   const timelineContainer = document.getElementById("timeline-container");
