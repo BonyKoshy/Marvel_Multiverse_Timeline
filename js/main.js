@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let sortAscending = true;
   let unwatchedOnly = false;
   let watchedItems = JSON.parse(localStorage.getItem("watchedItems")) || {};
+  let autoDockTimeout = null;
 
   // --- SELECTORS ---
   // Timeline & Counters
@@ -57,18 +58,58 @@ document.addEventListener("DOMContentLoaded", () => {
   const markAllWatchedBtn = document.getElementById("mark-all-watched-btn");
   const clearAllWatchedBtn = document.getElementById("clear-all-watched-btn");
 
-  // Media Type Icons Map
-  const typeIcons = {
-    Film: "🎬",
-    "TV Series": "📺",
-    Comic: "📚",
-    Short: "⏱️",
-    "Animated Series": "🎨",
-    "Animated Film": "🌟",
-    "Animated Short": "✨",
-    Digital: "💻",
-    Special: "⚡"
-  };
+  // ==========================================================
+  // SVG LINE ICONS LIBRARY (NO EMOJIS)
+  // ==========================================================
+  function getSvgIcon(name, extraClasses = "w-3.5 h-3.5") {
+    switch (name) {
+      case "film":
+        return `<svg class="${extraClasses}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="2.18" ry="2.18"/><line x1="7" x2="7" y1="2" y2="22"/><line x1="17" x2="17" y1="2" y2="22"/><line x1="2" x2="22" y1="12" y2="12"/><line x1="2" x2="7" y1="7" y2="7"/><line x1="2" x2="7" y1="17" y2="17"/><line x1="17" x2="22" y1="17" y2="17"/><line x1="17" x2="22" y1="7" y2="7"/></svg>`;
+      case "tv":
+        return `<svg class="${extraClasses}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="15" x="2" y="7" rx="2"/><polyline points="17 2 12 7 7 2"/></svg>`;
+      case "comic":
+        return `<svg class="${extraClasses}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10"/><path d="M6 10h10"/></svg>`;
+      case "short":
+        return `<svg class="${extraClasses}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`;
+      case "animated-series":
+        return `<svg class="${extraClasses}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"/></svg>`;
+      case "animated-film":
+        return `<svg class="${extraClasses}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 3 20 12 6 21 6 3"/></svg>`;
+      case "animated-short":
+        return `<svg class="${extraClasses}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4"/><path d="M12 18v4"/><path d="m4.93 4.93 2.83 2.83"/><path d="m16.24 16.24 2.83 2.83"/><path d="M2 12h4"/><path d="M18 12h4"/><path d="m4.93 19.07 2.83-2.83"/><path d="m16.24 7.76 2.83-2.83"/></svg>`;
+      case "digital":
+        return `<svg class="${extraClasses}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>`;
+      case "special":
+        return `<svg class="${extraClasses}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`;
+      case "clock":
+        return `<svg class="${extraClasses}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`;
+      case "globe":
+        return `<svg class="${extraClasses}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" x2="22" y1="12" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>`;
+      case "lock":
+        return `<svg class="${extraClasses}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`;
+      case "arrow-up":
+        return `<svg class="${extraClasses}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>`;
+      case "arrow-down":
+        return `<svg class="${extraClasses}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>`;
+      default:
+        return `<svg class="${extraClasses}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg>`;
+    }
+  }
+
+  function getTypeIconName(type) {
+    switch (type) {
+      case "Film": return "film";
+      case "TV Series": return "tv";
+      case "Comic": return "comic";
+      case "Short": return "short";
+      case "Animated Series": return "animated-series";
+      case "Animated Film": return "animated-film";
+      case "Animated Short": return "animated-short";
+      case "Digital": return "digital";
+      case "Special": return "special";
+      default: return "film";
+    }
+  }
 
   // --- INITIALIZATION ---
   function init() {
@@ -86,6 +127,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // 1. DOOMSDAY POPUP & COUNTDOWN
   // ==========================================================
   const DOOMSDAY_TARGET = new Date("2026-12-18T00:00:00Z").getTime();
+  let wasDoomsdayReleased = new Date().getTime() >= DOOMSDAY_TARGET;
 
   function initDoomsdayTimer() {
     function updateCountdown() {
@@ -98,6 +140,12 @@ document.addEventListener("DOMContentLoaded", () => {
         if (doomModalMinutes) doomModalMinutes.textContent = "00";
         if (doomModalSeconds) doomModalSeconds.textContent = "00";
         if (doomHeaderCountdown) doomHeaderCountdown.textContent = "NOW";
+
+        // Automatically unlock the Doomsday checkbox when target is reached
+        if (!wasDoomsdayReleased) {
+          wasDoomsdayReleased = true;
+          applyFilters();
+        }
         return;
       }
 
@@ -120,6 +168,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function openDoomsdayModal() {
     if (doomsdayModalBackdrop) {
+      if (autoDockTimeout) clearTimeout(autoDockTimeout);
+      const modalCard = document.getElementById("doomsday-modal-card");
+      if (modalCard) {
+        modalCard.classList.remove("docking");
+        modalCard.style.removeProperty("--dock-x");
+        modalCard.style.removeProperty("--dock-y");
+      }
       doomsdayModalBackdrop.classList.add("active");
     }
   }
@@ -130,36 +185,72 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function initDoomsdayModalLifecycle() {
-    // Show modal on first page visit in this session
-    const hasSeenModal = sessionStorage.getItem("doomsday-shown");
-    if (!hasSeenModal) {
-      setTimeout(() => {
-        openDoomsdayModal();
-        sessionStorage.setItem("doomsday-shown", "true");
-        // Auto-shrink to logo after 4.5 seconds if user hasn't clicked
-        setTimeout(() => {
-          closeDoomsdayModal();
-        }, 4500);
-      }, 500);
+  function dockDoomsdayModal() {
+    if (!doomsdayModalBackdrop || !doomsdayTriggerBtn) {
+      closeDoomsdayModal();
+      return;
     }
+    const modalCard = document.getElementById("doomsday-modal-card");
+    if (!modalCard) {
+      closeDoomsdayModal();
+      return;
+    }
+
+    // Calculate translation vector from center of modal to center of trigger button
+    const modalRect = modalCard.getBoundingClientRect();
+    const triggerRect = doomsdayTriggerBtn.getBoundingClientRect();
+
+    const modalCenterX = modalRect.left + modalRect.width / 2;
+    const modalCenterY = modalRect.top + modalRect.height / 2;
+    const triggerCenterX = triggerRect.left + triggerRect.width / 2;
+    const triggerCenterY = triggerRect.top + triggerRect.height / 2;
+
+    const deltaX = triggerCenterX - modalCenterX;
+    const deltaY = triggerCenterY - modalCenterY;
+
+    modalCard.style.setProperty("--dock-x", `${deltaX}px`);
+    modalCard.style.setProperty("--dock-y", `${deltaY}px`);
+    modalCard.classList.add("docking");
+
+    setTimeout(() => {
+      closeDoomsdayModal();
+      modalCard.classList.remove("docking");
+      modalCard.style.removeProperty("--dock-x");
+      modalCard.style.removeProperty("--dock-y");
+
+      // Visual feedback: flash/ping the header pill to acknowledge receipt
+      doomsdayTriggerBtn.classList.add("dock-received");
+      setTimeout(() => {
+        doomsdayTriggerBtn.classList.remove("dock-received");
+      }, 1100);
+    }, 420);
+  }
+
+  function initDoomsdayModalLifecycle() {
+    // Show modal when the page loads at first, then shrinks to the header pill
+    setTimeout(() => {
+      openDoomsdayModal();
+      autoDockTimeout = setTimeout(() => {
+        dockDoomsdayModal();
+      }, 4000);
+    }, 350);
 
     // Modal triggers
     if (doomsdayTriggerBtn) {
       doomsdayTriggerBtn.addEventListener("click", openDoomsdayModal);
     }
     if (closeDoomsdayModalBtn) {
-      closeDoomsdayModalBtn.addEventListener("click", closeDoomsdayModal);
+      closeDoomsdayModalBtn.addEventListener("click", dockDoomsdayModal);
     }
     if (minimizeDoomsdayModalBtn) {
-      minimizeDoomsdayModalBtn.addEventListener("click", closeDoomsdayModal);
+      minimizeDoomsdayModalBtn.addEventListener("click", dockDoomsdayModal);
     }
 
-    // Close on backdrop click
+    // Close/dock on backdrop click
     if (doomsdayModalBackdrop) {
       doomsdayModalBackdrop.addEventListener("click", (e) => {
         if (e.target === doomsdayModalBackdrop) {
-          closeDoomsdayModal();
+          dockDoomsdayModal();
         }
       });
     }
@@ -167,7 +258,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Close on Escape key
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape") {
-        closeDoomsdayModal();
+        dockDoomsdayModal();
         closeMobileDrawer();
       }
     });
@@ -261,11 +352,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function renderFormatPills(types) {
     const renderPillHTML = (type) => {
-      const icon = typeIcons[type] || "🔹";
+      const icon = getSvgIcon(getTypeIconName(type), "w-3.5 h-3.5 flex-shrink-0");
       const isSelected = selectedTypes.has(type);
       return `
         <button type="button" data-type="${type}" class="media-pill ${isSelected ? "active" : ""}">
-          <span>${icon}</span>
+          ${icon}
           <span>${type}</span>
         </button>
       `;
@@ -293,6 +384,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Group items by Era with clean headers
     let currentEra = null;
+    const now = new Date().getTime();
+    const isDoomsdayReleased = now >= DOOMSDAY_TARGET;
 
     items.forEach((item) => {
       if (item.era !== currentEra) {
@@ -315,8 +408,33 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Render Card
       const isWatched = !!watchedItems[item.title];
-      const typeIcon = typeIcons[item.type] || "🔹";
       const isDoomsday = item.title.includes("Doomsday");
+      const iconSvg = getSvgIcon(getTypeIconName(item.type), "w-3 h-3 flex-shrink-0");
+      const clockSvg = getSvgIcon("clock", "w-3 h-3 flex-shrink-0 text-emerald-500");
+      const globeSvg = getSvgIcon("globe", "w-3 h-3 flex-shrink-0 text-slate-400");
+      const lockSvg = getSvgIcon("lock", "w-3 h-3 flex-shrink-0 text-emerald-500");
+
+      // Right action: LOCKED indicator for unreleased Doomsday, or Checkbox when released
+      let rightActionHTML = "";
+      if (isDoomsday && !isDoomsdayReleased) {
+        rightActionHTML = `
+          <div class="flex items-center gap-1 px-2 py-0.5 rounded-sm bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 font-tech font-bold text-[11px] tracking-wider select-none" title="Classified until theatrical premiere (December 18, 2026)">
+            ${lockSvg}
+            <span>LOCKED</span>
+          </div>
+        `;
+      } else {
+        rightActionHTML = `
+          <label class="cursor-pointer" title="Mark as Watched">
+            <input
+              type="checkbox"
+              data-title="${item.title}"
+              class="watched-checkbox custom-checkbox"
+              ${isWatched ? "checked" : ""}
+            />
+          </label>
+        `;
+      }
 
       const cardDiv = document.createElement("div");
       cardDiv.className = "timeline-item";
@@ -326,10 +444,9 @@ document.addEventListener("DOMContentLoaded", () => {
           <div class="flex justify-between items-start gap-2.5 sm:gap-3">
             <div class="flex-1 min-w-0">
               <div class="flex items-center gap-1.5 flex-wrap mb-1.5">
-                <span class="badge-year">⏱️ ${item.year}</span>
-                <span class="badge-tag">🌐 ${item.universe}</span>
-                <span class="badge-tag">${typeIcon} ${item.type}</span>
-                ${isDoomsday ? '<span class="badge-doomsday">⚡ DOOMSDAY</span>' : ''}
+                <span class="badge-year inline-flex items-center gap-1">${clockSvg} ${item.year}</span>
+                <span class="badge-tag inline-flex items-center gap-1">${globeSvg} ${item.universe}</span>
+                <span class="badge-tag inline-flex items-center gap-1">${iconSvg} ${item.type}</span>
               </div>
               <h4 class="card-title font-orbitron font-bold text-xs xs:text-sm sm:text-base text-slate-900 dark:text-slate-100 tracking-wide leading-snug break-words">
                 ${item.title}
@@ -337,14 +454,7 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
 
             <div class="flex-shrink-0 flex items-center pt-0.5">
-              <label class="cursor-pointer" title="Mark as Watched">
-                <input
-                  type="checkbox"
-                  data-title="${item.title}"
-                  class="watched-checkbox custom-checkbox"
-                  ${isWatched ? "checked" : ""}
-                />
-              </label>
+              ${rightActionHTML}
             </div>
           </div>
         </div>
@@ -535,6 +645,14 @@ document.addEventListener("DOMContentLoaded", () => {
   // ==========================================================
   // 7. FILTER APPLICATION
   // ==========================================================
+  function updateSortButton() {
+    if (!sortOrderToggle) return;
+    sortOrderToggle.innerHTML = `
+      <span>${sortAscending ? "Past → Future" : "Future → Past"}</span>
+      ${getSvgIcon(sortAscending ? "arrow-up" : "arrow-down", "w-3.5 h-3.5")}
+    `;
+  }
+
   function applyFilters() {
     const searchTerm = searchInput.value.trim().toLowerCase();
     const selectedEra = eraSelect.value;
@@ -580,7 +698,7 @@ document.addEventListener("DOMContentLoaded", () => {
     unwatchedOnly = false;
     unwatchedToggle.checked = false;
     mobileUnwatchedToggle.checked = false;
-    sortOrderToggle.textContent = "Past → Future ▲";
+    updateSortButton();
 
     document
       .querySelectorAll(".media-pill")
@@ -676,11 +794,11 @@ document.addEventListener("DOMContentLoaded", () => {
     // Sort toggle
     sortOrderToggle.addEventListener("click", () => {
       sortAscending = !sortAscending;
-      sortOrderToggle.textContent = sortAscending ? "Past → Future ▲" : "Future → Past ▼";
+      updateSortButton();
       applyFilters();
     });
 
-    // Multi-Select Media Format Handler (works for both desktop and mobile buttons)
+    // Multi-Select Media Format Handler
     const handleFormatPillClick = (btn) => {
       const type = btn.dataset.type;
       if (selectedTypes.has(type)) {
@@ -733,7 +851,7 @@ document.addEventListener("DOMContentLoaded", () => {
         watchedItems[title] = true;
         if (card) card.classList.add("watched");
 
-        // Confetti
+        // Confetti burst
         const rect = checkbox.getBoundingClientRect();
         confetti({
           particleCount: 60,

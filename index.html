@@ -4,9 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Marvel Multiverse Holo-Database | Doomsday Edition</title>
+    <!-- Line Icon Multiverse Favicon -->
     <link
       rel="icon"
-      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><path fill=%22%2310b981%22 d=%22M0 0h100v100H0z%22/><text x=%2250%%22 y=%2250%%22 font-size=%2260%22 fill=%22%23070a12%22 text-anchor=%22middle%22 dy=%22.35em%22 font-family=%22sans-serif%22 font-weight=%22900%22>M</text></svg>"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2310b981' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cline x1='2' y1='12' x2='22' y2='12'/%3E%3Cpath d='M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z'/%3E%3C/svg%3E"
     />
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -52,17 +53,21 @@
     <div id="background-pattern"></div>
 
     <!-- ==============================================================
-         1. DOOMSDAY POPUP MODAL (SHRINKS TO LOGO ON DISMISS)
+         1. DOOMSDAY POPUP MODAL (SHRINKS TO HEADER BUTTON)
          ============================================================== -->
     <div id="doomsday-modal-backdrop" class="doomsday-modal-backdrop">
-      <div class="doomsday-modal-content p-5 sm:p-7">
-        <!-- Close Button -->
+      <div id="doomsday-modal-card" class="doomsday-modal-content p-5 sm:p-7">
+        <!-- Close Line Icon Button -->
         <button
           id="close-doomsday-modal-btn"
           class="absolute top-3.5 right-3.5 w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition z-20"
-          title="Minimize to Header"
+          title="Dock to Header"
+          aria-label="Close and dock to header"
         >
-          ✕
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
         </button>
 
         <!-- Threat Banner -->
@@ -109,18 +114,22 @@
           </p>
         </div>
 
-        <!-- Action / Minimize Button -->
+        <!-- Action / Dock Button -->
         <button
           id="minimize-doomsday-modal-btn"
-          class="w-full py-2.5 px-4 rounded-md bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-tech font-bold uppercase tracking-wider text-sm transition shadow-[0_0_20px_rgba(16,185,129,0.4)]"
+          class="w-full py-2.5 px-4 rounded-md bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-tech font-bold uppercase tracking-wider text-sm transition shadow-[0_0_20px_rgba(16,185,129,0.4)] flex items-center justify-center gap-2"
         >
-          Acknowledge & Dock to Header
+          <span>Acknowledge & Dock to Header</span>
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="7" y1="17" x2="17" y2="7"></line>
+            <polyline points="7 7 17 7 17 17"></polyline>
+          </svg>
         </button>
       </div>
     </div>
 
     <!-- ==============================================================
-         2. MAIN NAVIGATION HEADER (WITHOUT "D" LOGO BOX)
+         2. MAIN NAVIGATION HEADER
          ============================================================== -->
     <header class="main-header sticky top-0 z-30">
       <div class="max-w-7xl mx-auto px-3 sm:px-6 py-2.5 sm:py-3 flex items-center justify-between gap-2 sm:gap-4">
@@ -136,9 +145,9 @@
           </div>
         </div>
 
-        <!-- Header Actions: Doomsday Pill + Watched + Theme -->
-        <div class="flex items-center gap-1.5 sm:gap-3 flex-shrink-0">
-          <!-- Doomsday Logo Trigger Button (Shrunk state) -->
+        <!-- Header Actions: Doomsday Pill + Watched + Theme (Matched Heights) -->
+        <div class="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+          <!-- Doomsday Logo Trigger Button -->
           <button
             id="doomsday-trigger-btn"
             class="doomsday-header-pill"
@@ -150,7 +159,7 @@
           </button>
 
           <!-- Watched Status Badge -->
-          <div class="hidden md:flex items-center gap-2 bg-slate-200/60 dark:bg-slate-800/80 border border-emerald-500/20 rounded-full px-3 py-1">
+          <div class="hidden md:flex items-center gap-2 bg-slate-200/60 dark:bg-slate-800/80 border border-emerald-500/20 rounded-full px-3 h-9">
             <span class="text-xs font-tech font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">
               Progress: <span id="header-watched-count" class="text-emerald-600 dark:text-emerald-400">0</span>/<span id="header-total-count">179</span>
             </span>
@@ -160,25 +169,34 @@
           <!-- Analytics HUD Toggle -->
           <button
             id="toggle-analytics-btn"
-            class="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-tech font-bold uppercase tracking-wider rounded-md border border-slate-300 dark:border-slate-800 bg-white/70 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 hover:border-emerald-500 hover:text-emerald-500 transition"
+            class="hidden md:inline-flex items-center gap-1.5 px-3 h-9 text-xs font-tech font-bold uppercase tracking-wider rounded-full border border-slate-300 dark:border-slate-800 bg-white/70 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 hover:border-emerald-500 hover:text-emerald-500 transition"
             title="Toggle Mission Analytics"
           >
             Analytics
           </button>
 
-          <!-- Dark/Light Mode Toggle -->
+          <!-- Dark/Light Mode Toggle (Standardized to Match Doomsday Pill Height) -->
           <button
             id="dark-mode-toggle"
-            class="w-8 h-8 sm:w-9 sm:h-9 rounded-md flex items-center justify-center border border-slate-300 dark:border-emerald-500/25 bg-white/80 dark:bg-slate-800/80 text-slate-700 dark:text-emerald-400 hover:scale-105 transition flex-shrink-0"
+            class="header-action-btn"
             title="Toggle Light/Dark Theme"
+            aria-label="Toggle Light/Dark Theme"
           >
             <!-- Sun Icon -->
-            <svg id="theme-toggle-light-icon" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+            <svg id="theme-toggle-light-icon" class="w-4 h-4 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="5"></circle>
+              <line x1="12" y1="1" x2="12" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="23"></line>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+              <line x1="1" y1="12" x2="3" y2="12"></line>
+              <line x1="21" y1="12" x2="23" y2="12"></line>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
             </svg>
             <!-- Moon Icon -->
-            <svg id="theme-toggle-dark-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+            <svg id="theme-toggle-dark-icon" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
             </svg>
           </button>
         </div>
@@ -260,7 +278,12 @@
                     class="ui-input pr-7"
                     placeholder="Search titles, years, characters..."
                   />
-                  <button id="clear-search-btn" class="absolute right-2 top-2 text-slate-400 hover:text-slate-200 text-xs hidden">✕</button>
+                  <button id="clear-search-btn" class="absolute right-2 top-2.5 text-slate-400 hover:text-emerald-400 hidden" title="Clear search">
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <line x1="18" y1="6" x2="6" y2="18"></line>
+                      <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                  </button>
                 </div>
               </div>
 
@@ -293,7 +316,7 @@
                   <button id="clear-formats-btn" class="text-[10px] font-tech text-emerald-500 hover:underline uppercase">All</button>
                 </div>
                 <div id="type-buttons" class="flex flex-wrap gap-1.5">
-                  <!-- Dynamically generated media format pills -->
+                  <!-- Dynamically generated media format pills with line icons -->
                 </div>
               </div>
 
@@ -310,9 +333,13 @@
                   <span class="font-bold uppercase tracking-wider text-slate-500">Order:</span>
                   <button
                     id="sort-order-toggle"
-                    class="px-2.5 py-1 rounded-md bg-slate-200 dark:bg-slate-800 font-bold text-emerald-500 hover:bg-slate-300 dark:hover:bg-slate-700 transition"
+                    class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-200 dark:bg-slate-800 font-bold text-emerald-500 hover:bg-slate-300 dark:hover:bg-slate-700 transition"
                   >
-                    Past → Future ▲
+                    <span>Past → Future</span>
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <line x1="12" y1="19" x2="12" y2="5"></line>
+                      <polyline points="5 12 12 5 19 12"></polyline>
+                    </svg>
                   </button>
                 </div>
               </div>
@@ -375,8 +402,11 @@
 
         <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3 mb-4">
           <h2 class="ui-panel-title">TACTICAL FILTERS</h2>
-          <button id="close-mobile-drawer-btn" class="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:text-emerald-500 text-lg">
-            ✕
+          <button id="close-mobile-drawer-btn" class="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:text-emerald-500 transition">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
           </button>
         </div>
 
@@ -438,9 +468,12 @@
         <!-- Apply / Close Button -->
         <button
           id="apply-mobile-filter-btn"
-          class="w-full py-3 rounded-md bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-tech font-bold uppercase tracking-wider text-sm shadow-[0_0_15px_rgba(16,185,129,0.4)] transition"
+          class="w-full py-3 rounded-md bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-tech font-bold uppercase tracking-wider text-sm shadow-[0_0_15px_rgba(16,185,129,0.4)] transition flex items-center justify-center gap-2"
         >
-          Apply Filters & Close
+          <span>Apply Filters & Close</span>
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
         </button>
       </div>
     </div>

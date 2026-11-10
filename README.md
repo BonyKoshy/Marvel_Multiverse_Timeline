@@ -1,4 +1,4 @@
-# 🛰️ MARVEL MULTIVERSE TIMELINE
+# 🛰️ MARVEL MULTIVERSE TIMELINE — DOOMSDAY EDITION
 
 ![Marvel Multiverse Holo-Database Banner](images/my_banner.jpg)
 
@@ -8,69 +8,69 @@
 
 ## 🕶️ Welcome, Agent of S.H.I.E.L.D.
 
-You have been granted **Level 7 Clearance** to access the **Marvel Multiverse Holo-Database**.  
-This interface is designed to:
+You have been granted **Level 7 Clearance** to access the **Marvel Multiverse Holo-Database (Doomsday Edition)**.  
+Cross-referenced against Marvel Studios' *The Marvel Cinematic Universe: An Official Timeline* and the Disney+ Complete Timeline order, this terminal tracks the canonical multi-reality chronology across the multiverse.
 
-- Track every **film, series, one-shot, and comic** across the Marvel timelines
-- Decode **variants** across different Earths (616, 838, 10005…)
-- Organize your viewing history chronologically ✨
+- Track **179 canonical films, live-action series, animation, one-shots, and tie-in comics**
+- Monitor reality sectors (**Earth-616, Earth-10005, Earth-92131, Earth-1610B, Earth-688B…**)
+- Live **Incursion Warning & Doomsday Countdown** to *Avengers: Doomsday* (December 18, 2026)
+- Multi-format tactical filters with responsive mobile drawer support
 
 ![Marvel Multiverse Portal](images/Temporal_Loom.webp)
 
 ---
 
-## 🚀 Mission Protocols (Features)
+## 🚀 Mission Protocols (Key Features)
 
-### 🗓️ Chronological Database
+### ⏱️ Avengers: Doomsday Incursion Protocol
+- Interactive temporal modal displaying a real-time countdown to December 18, 2026.
+- Automatically docks into the header pill on acknowledgement and expands on command.
+- Clicking the *Avengers: Doomsday* timeline card instantly summons the protocol HUD.
 
-📜 Scroll through a **single, unbroken timeline** — from _Captain America’s first shield_ to _Secret Wars_.
+### 🗓️ Chronologically Accurate Canon Stream
+- 179 verified entries arranged monotonically by canonical in-universe timeframe.
+- Accurately sequences post-credits splits, Marvel Television canon (*Agents of S.H.I.E.L.D.*, *Daredevil*, *The Punisher*, *Cloak & Dagger*, *Runaways*), Prelude tie-ins, and Multiverse incursions (*Deadpool & Wolverine*, *Spider-Verse*).
 
-### 🧠 Intelligent Filtering
+### 🎛️ Tactical Multi-Select Filtering
+- **Multi-Select Media Formats**: Filter simultaneously by multiple formats (e.g., Films + TV Series + Specials).
+- **Era / Saga Selector**: Foundations, Phase One through Phase Six, The Multiverse Saga.
+- **Universe Sector Selector**: Earth-616 Sacred Timeline, Earth-10005, Earth-92131, and more.
+- **Mobile Bottom-Sheet Drawer**: Full-featured filter experience accessible via a floating action trigger.
 
-🔍 Slice the timeline like Doctor Strange with:
+### 📊 Watch Progress & Clearance Ranks
+- Track watched entries with local persistence and celebratory particle burst.
+- Dynamic clearance level updates from *Civilian Contact* to *The Watcher*.
 
-- Saga → _Infinity Saga, Multiverse Saga, Mutant Saga_ - Universe → _Earth-616, Earth-838, Earth-199999, Earth-10005_ - Media → _Movies, Shows, Animation, Comics_ - Search → enter keywords like `"Avengers Assemble"` or `"Mutants"`
-
-### 📊 Progress Tracker
-
-✅ Mark what you’ve seen → your **Multiverse Completion %** updates.  
-🎉 Confetti rains down like you just lifted Mjölnir.
-
-### 📈 Holo-Graphs
-
-Visualize your watch history with **Stark-tech dashboards**:
-
-- Releases by **Decade** - Media Type **Breakdown** ![iron man HUD](images/hud.avif)
-
----
-
-## 🌌 The Multiverse Awaits...
-
-This isn’t just MCU (Earth-616).  
-The Holo-Database maps **X-Men’s Earth-10005**, _What If...?_, and even **variants from across timelines**.
-
-👉 **Live Database:** [marvelmultiversetimeline.netlify.app](https://marvelmultiversetimeline.netlify.app/)
+### 📈 Stark-Tech Holo-Analytics
+- Releases grouped by decade and media format distribution charts.
+- Unified **Doomsday Emerald & Titanium Dark** palette with instant light/dark theme switching.
 
 ---
 
-## 🛠️ Tech & Assembly (For Techies)
+## 🛠️ Technology Stack
 
-This project was engineered with:
-
-- 🖥️ **HTML5** → core structure
-- 🎨 **Tailwind CSS** → Stark-speed styling
-- 📊 **Chart.js** → Timeline analytics
-- 💻 **Vanilla JavaScript** → Holo-logic
-
-![iron man coding](images/coding.jpg)
+- **HTML5 & Vanilla JavaScript** — Zero-dependency core application logic
+- **Tailwind CSS & Modern CSS3** — Doomsday Emerald & Titanium design system with CSS custom properties
+- **Chart.js** — Interactive analytical distribution charts
+- **Canvas Confetti** — Milestone celebration effects
 
 ---
 
-## 🕹️ Ready to Dive In?
+## 🕹️ Quick Start & Deployment
 
-1. `git clone https://github.com/bonykoshy/mcu.timeline.git`
-2. Open in your IDE → preferably in a **dark theme like Wakanda Forever** 🌑
-3. Deploy on Netlify (or your choice of battleground).
-4. Access your clearance → **the Multiverse is now yours to command.**
+```bash
+# Clone the repository
+git clone https://github.com/BonyKoshy/Marvel_Multiverse_Timeline.git
 
-⚡ _Remember, Agent:_ “With great databases comes great responsibility.” 🕷️
+# Navigate into project directory
+cd Marvel_Multiverse_Timeline
+
+# Serve locally using any static web server (e.g., VS Code Live Server, python http.server, or npx serve)
+python -m http.server 8000
+```
+
+👉 **Live Deployment:** [marvelmultiversetimeline.netlify.app](https://marvelmultiversetimeline.netlify.app/)
+
+---
+
+⚡ *Latverian Loom Directive:* "All timelines collapse into the crucible. Prepare your chronological clearance before the Multiverse fractures."

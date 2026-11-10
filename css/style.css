@@ -102,7 +102,7 @@ html.dark #background-pattern {
 }
 
 /* ==========================================================
-   1. DOOMSDAY POPUP MODAL & LOGO SHRINK
+   1. DOOMSDAY POPUP MODAL & DOCK-TO-HEADER ANIMATION
    ========================================================== */
 .doomsday-modal-backdrop {
     position: fixed;
@@ -117,7 +117,7 @@ html.dark #background-pattern {
     padding: 1rem;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .doomsday-modal-backdrop.active {
@@ -135,7 +135,8 @@ html.dark #background-pattern {
     overflow: hidden;
     position: relative;
     transform: scale(0.92) translateY(20px);
-    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+    will-change: transform, opacity;
 }
 
 html:not(.dark) .doomsday-modal-content {
@@ -146,6 +147,14 @@ html:not(.dark) .doomsday-modal-content {
 
 .doomsday-modal-backdrop.active .doomsday-modal-content {
     transform: scale(1) translateY(0);
+}
+
+/* Smooth shrink-and-dock into the header pill */
+.doomsday-modal-content.docking {
+    transform: translate(var(--dock-x, 0), var(--dock-y, 0)) scale(0.12) !important;
+    opacity: 0 !important;
+    transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.38s ease !important;
+    pointer-events: none !important;
 }
 
 /* Radar scanline on Doomsday popup */
@@ -206,25 +215,72 @@ html:not(.dark) .doomsday-digit-val {
     text-shadow: none;
 }
 
+/* ==========================================================
+   2. HEADER & STANDARDIZED ACTION BUTTONS
+   ========================================================== */
+.main-header {
+    background: var(--surface-glass-light);
+    border-bottom: 1px solid var(--panel-border-light);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+
+html.dark .main-header {
+    background: var(--surface-glass-dark);
+    border-bottom: 1px solid var(--panel-border-dark);
+}
+
+/* Standardized Theme Toggle Button (Matches Doomsday Pill Height Exactly) */
+.header-action-btn {
+    width: 2.25rem;
+    height: 2.25rem;
+    min-width: 2.25rem;
+    min-height: 2.25rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-full);
+    background: rgba(16, 185, 129, 0.12);
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    color: #10b981;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+    box-sizing: border-box;
+}
+
+html:not(.dark) .header-action-btn {
+    background: rgba(5, 150, 105, 0.1);
+    border-color: rgba(5, 150, 105, 0.35);
+    color: #047857;
+}
+
+.header-action-btn:hover {
+    background: rgba(16, 185, 129, 0.22);
+    border-color: #10b981;
+    transform: scale(1.05);
+    box-shadow: 0 0 12px rgba(16, 185, 129, 0.3);
+}
+
 /* Header Doomsday Trigger Pill */
 .doomsday-header-pill {
     display: inline-flex;
     align-items: center;
-    gap: 0.35rem;
-    padding: 0.35rem 0.75rem;
-    min-height: 2rem;
-    max-height: 2.15rem;
+    gap: 0.4rem;
+    padding: 0 0.85rem;
+    height: 2.25rem;
+    min-height: 2.25rem;
     background: rgba(16, 185, 129, 0.12);
-    border: 1px solid rgba(16, 185, 129, 0.4);
+    border: 1px solid rgba(16, 185, 129, 0.35);
     border-radius: var(--radius-full);
     color: #10b981;
     font-family: var(--font-tech);
     font-weight: 700;
-    font-size: 0.76rem;
+    font-size: 0.78rem;
     letter-spacing: 0.05em;
     cursor: pointer;
     transition: all 0.2s ease;
-    box-shadow: 0 0 12px rgba(16, 185, 129, 0.2);
+    box-shadow: 0 0 12px rgba(16, 185, 129, 0.18);
     flex-shrink: 0;
     white-space: nowrap;
     box-sizing: border-box;
@@ -232,7 +288,7 @@ html:not(.dark) .doomsday-digit-val {
 
 html:not(.dark) .doomsday-header-pill {
     background: rgba(5, 150, 105, 0.12);
-    border-color: rgba(5, 150, 105, 0.4);
+    border-color: rgba(5, 150, 105, 0.35);
     color: #047857;
     box-shadow: 0 0 8px rgba(5, 150, 105, 0.15);
 }
@@ -242,6 +298,17 @@ html:not(.dark) .doomsday-header-pill {
     border-color: #10b981;
     transform: translateY(-1px);
     box-shadow: 0 0 16px rgba(16, 185, 129, 0.4);
+}
+
+/* Dock-received glow ping when modal docks into pill */
+.doomsday-header-pill.dock-received {
+    animation: dock-ping 1s ease-out;
+}
+
+@keyframes dock-ping {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.8); }
+    40% { transform: scale(1.12); box-shadow: 0 0 25px 8px rgba(16, 185, 129, 0.6); }
+    100% { transform: scale(1); box-shadow: 0 0 12px rgba(16, 185, 129, 0.18); }
 }
 
 .pulse-beacon {
@@ -257,21 +324,6 @@ html:not(.dark) .doomsday-header-pill {
 @keyframes beacon-pulse {
     0%, 100% { transform: scale(1); opacity: 1; }
     50% { transform: scale(0.7); opacity: 0.4; }
-}
-
-/* ==========================================================
-   2. HEADER & BRANDING
-   ========================================================== */
-.main-header {
-    background: var(--surface-glass-light);
-    border-bottom: 1px solid var(--panel-border-light);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-}
-
-html.dark .main-header {
-    background: var(--surface-glass-dark);
-    border-bottom: 1px solid var(--panel-border-dark);
 }
 
 /* ==========================================================
@@ -345,7 +397,7 @@ html.dark .ui-input, html.dark .ui-select {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 0.35rem;
+    gap: 0.4rem;
     cursor: pointer;
     transition: all 0.2s ease;
     user-select: none;
@@ -524,7 +576,7 @@ html.dark .timeline-card {
     box-shadow: 0 6px 20px rgba(16, 185, 129, 0.18);
 }
 
-/* Avengers: Doomsday Card Glow */
+/* Avengers: Doomsday Card Glow (Clean, No Bouncing Chip) */
 .timeline-card[data-title*="Doomsday"] {
     border-color: #10b981;
     box-shadow: 0 0 20px rgba(16, 185, 129, 0.32);
@@ -565,32 +617,14 @@ html:not(.dark) .badge-year { color: #047857; }
     color: var(--text-secondary-dark);
     display: inline-flex;
     align-items: center;
-    gap: 0.25rem;
+    gap: 0.3rem;
     text-transform: uppercase;
     white-space: nowrap;
 }
 
 html:not(.dark) .badge-tag { color: var(--text-secondary-light); }
 
-.badge-doomsday {
-    font-family: var(--font-tech);
-    font-size: 0.68rem;
-    font-weight: 800;
-    letter-spacing: 0.06em;
-    padding: 0.15rem 0.45rem;
-    border-radius: var(--radius-sm);
-    background: rgba(16, 185, 129, 0.2);
-    border: 1px solid #10b981;
-    color: #10b981;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.25rem;
-    text-transform: uppercase;
-    white-space: nowrap;
-    animation: beacon-pulse 2s infinite ease-in-out;
-}
-
-/* Tactical Checkbox */
+/* Tactical Line-Icon Checkbox */
 .custom-checkbox {
     appearance: none;
     width: 20px;
@@ -611,16 +645,13 @@ html:not(.dark) .badge-tag { color: var(--text-secondary-light); }
 }
 
 .custom-checkbox:checked {
-    background: #10b981;
+    background-color: #10b981;
     border-color: #10b981;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23070a12' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
+    background-size: 14px 14px;
+    background-position: center;
+    background-repeat: no-repeat;
     box-shadow: 0 0 12px rgba(16, 185, 129, 0.6);
-}
-
-.custom-checkbox:checked::before {
-    content: '✓';
-    color: #070a12;
-    font-size: 12px;
-    font-weight: 900;
 }
 
 /* ==========================================================
