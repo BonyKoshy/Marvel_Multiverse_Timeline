@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Marvel Multiverse Holo-Database | Chronological Archive</title>
+    <title>Marvel Multiverse Holo-Database | Doomsday Edition</title>
     <link
       rel="icon"
-      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><path fill=%22%2310b981%22 d=%22M0 0h100v100H0z%22/><text x=%2250%%22 y=%2250%%22 font-size=%2270%22 fill=%22black%22 text-anchor=%22middle%22 dy=%22.35em%22 font-family=%22sans-serif%22 font-weight=%22900%22>D</text></svg>"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><path fill=%22%2310b981%22 d=%22M0 0h100v100H0z%22/><text x=%2250%%22 y=%2250%%22 font-size=%2265%22 fill=%22%23070a12%22 text-anchor=%22middle%22 dy=%22.35em%22 font-family=%22sans-serif%22 font-weight=%22900%22>D</text></svg>"
     />
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -16,13 +16,16 @@
         theme: {
           extend: {
             colors: {
-              cyber: {
-                cyan: '#00f5ff',
-                doom: '#10b981',
-                purple: '#b366ff',
-                gold: '#fbbf24',
-                dark: '#05070e',
-                surface: '#0b1120'
+              doom: {
+                50: '#ecfdf5',
+                100: '#d1fae5',
+                400: '#34d399',
+                500: '#10b981',
+                600: '#059669',
+                700: '#047857',
+                900: '#064e3b',
+                dark: '#070a12',
+                surface: '#0d1322'
               }
             }
           }
@@ -41,204 +44,187 @@
     />
     <link rel="stylesheet" href="css/style.css" />
   </head>
-  <body class="bg-slate-100 dark:bg-[#05070e] text-slate-900 dark:text-slate-100 min-h-screen">
-    <!-- Ambient Holographic Grid Background -->
+  <body class="bg-slate-50 dark:bg-[#070a12] text-slate-900 dark:text-slate-100 min-h-screen">
+    <!-- Ambient Holographic Grid -->
     <div id="background-pattern"></div>
 
     <!-- ==============================================================
-         1. DOOMSDAY COUNTDOWN WIDGET (TOP HERO)
+         1. DOOMSDAY POPUP MODAL (SHRINKS TO LOGO ON DISMISS)
          ============================================================== -->
-    <aside id="doomsday-widget" class="doomsday-banner py-4 px-4 sm:px-6 relative">
-      <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-        <!-- Left: Status & Warning Info -->
-        <div class="flex items-center gap-3">
-          <div class="live-beacon flex-shrink-0"></div>
-          <div>
-            <div class="flex items-center gap-2 flex-wrap">
-              <span class="incursion-badge px-2.5 py-0.5 rounded text-[11px] font-bold">
-                PROTOCOL: DOOMSDAY
-              </span>
-              <span class="text-xs uppercase tracking-wider text-emerald-600 dark:text-emerald-400 font-semibold font-tech">
-                INCURSION IMMINENT // CLASS: OMEGA
-              </span>
-            </div>
-            <h2 class="text-lg md:text-xl font-orbitron font-extrabold tracking-wide text-slate-900 dark:text-white mt-0.5">
-              AVENGERS: DOOMSDAY
-            </h2>
-            <p class="text-xs text-slate-600 dark:text-slate-400 font-tech tracking-wider hidden sm:block">
-              Target Theatrical Event: December 18, 2026 | Sector: Earth-616
-            </p>
+    <div id="doomsday-modal-backdrop" class="doomsday-modal-backdrop">
+      <div class="doomsday-modal-content p-6 sm:p-8">
+        <!-- Close Button -->
+        <button
+          id="close-doomsday-modal-btn"
+          class="absolute top-4 right-4 w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition z-20"
+          title="Minimize to Header"
+        >
+          ✕
+        </button>
+
+        <!-- Threat Banner -->
+        <div class="flex items-center gap-2 mb-3">
+          <span class="pulse-beacon"></span>
+          <span class="text-[11px] font-tech font-bold uppercase tracking-widest text-emerald-500">
+            INCURSION WARNING // THREAT LEVEL: OMEGA
+          </span>
+        </div>
+
+        <h2 class="font-orbitron font-black text-2xl sm:text-3xl tracking-wider text-slate-900 dark:text-white mb-1">
+          AVENGERS: DOOMSDAY
+        </h2>
+        <p class="text-xs text-slate-600 dark:text-slate-400 font-tech uppercase tracking-wider mb-6">
+          Theatrical Collision: December 18, 2026 • Earth-616 Reality Anchor
+        </p>
+
+        <!-- Digital Timer Grid -->
+        <div class="grid grid-cols-4 gap-2 sm:gap-3 mb-6">
+          <div class="doomsday-digit-card">
+            <span id="doom-modal-days" class="doomsday-digit-val block">---</span>
+            <span class="text-[10px] uppercase tracking-widest text-slate-500 dark:text-slate-400 font-tech font-bold">Days</span>
+          </div>
+          <div class="doomsday-digit-card">
+            <span id="doom-modal-hours" class="doomsday-digit-val block">--</span>
+            <span class="text-[10px] uppercase tracking-widest text-slate-500 dark:text-slate-400 font-tech font-bold">Hours</span>
+          </div>
+          <div class="doomsday-digit-card">
+            <span id="doom-modal-minutes" class="doomsday-digit-val block">--</span>
+            <span class="text-[10px] uppercase tracking-widest text-slate-500 dark:text-slate-400 font-tech font-bold">Mins</span>
+          </div>
+          <div class="doomsday-digit-card">
+            <span id="doom-modal-seconds" class="doomsday-digit-val block">--</span>
+            <span class="text-[10px] uppercase tracking-widest text-slate-500 dark:text-slate-400 font-tech font-bold">Secs</span>
           </div>
         </div>
 
-        <!-- Center: Countdown Digits -->
-        <div id="doomsday-timer-display" class="grid grid-cols-4 gap-2 sm:gap-3 text-center">
-          <div class="doomsday-card px-2.5 py-1.5 sm:px-4 sm:py-2">
-            <span id="doom-days" class="doomsday-number block text-xl sm:text-2xl font-bold">---</span>
-            <span class="text-[10px] uppercase tracking-widest text-slate-500 dark:text-slate-400 font-tech">Days</span>
-          </div>
-          <div class="doomsday-card px-2.5 py-1.5 sm:px-4 sm:py-2">
-            <span id="doom-hours" class="doomsday-number block text-xl sm:text-2xl font-bold">--</span>
-            <span class="text-[10px] uppercase tracking-widest text-slate-500 dark:text-slate-400 font-tech">Hours</span>
-          </div>
-          <div class="doomsday-card px-2.5 py-1.5 sm:px-4 sm:py-2">
-            <span id="doom-minutes" class="doomsday-number block text-xl sm:text-2xl font-bold">--</span>
-            <span class="text-[10px] uppercase tracking-widest text-slate-500 dark:text-slate-400 font-tech">Mins</span>
-          </div>
-          <div class="doomsday-card px-2.5 py-1.5 sm:px-4 sm:py-2">
-            <span id="doom-seconds" class="doomsday-number block text-xl sm:text-2xl font-bold">--</span>
-            <span class="text-[10px] uppercase tracking-widest text-slate-500 dark:text-slate-400 font-tech">Secs</span>
-          </div>
+        <div class="bg-emerald-500/10 border border-emerald-500/25 rounded-xl p-3.5 mb-6 text-xs text-slate-600 dark:text-slate-300">
+          <p class="font-semibold text-emerald-700 dark:text-emerald-400 mb-1 font-tech uppercase tracking-wider">
+            Latverian Temporal Loom Directive:
+          </p>
+          <p class="italic text-[11px] leading-relaxed">
+            "All timelines collapse into the crucible. Prepare your chronological clearance before the Multiverse fractures."
+          </p>
         </div>
 
-        <!-- Right: Mini Doom Info / Collapse Toggle -->
-        <div class="flex items-center gap-3">
-          <div class="text-right hidden lg:block">
-            <div class="text-[11px] font-tech text-emerald-600 dark:text-emerald-400 uppercase tracking-widest font-semibold">
-              Status: Latverian Incursion
-            </div>
-            <div class="text-xs text-slate-600 dark:text-slate-300 italic">
-              "There is only Doom."
-            </div>
-          </div>
-          <button
-            id="toggle-doomsday-banner"
-            class="p-1.5 text-xs rounded-lg border border-emerald-500/30 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-500/10 transition"
-            title="Minimize/Expand Countdown"
-          >
-            <svg id="doom-chevron" class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
-            </svg>
-          </button>
-        </div>
+        <!-- Action / Minimize Button -->
+        <button
+          id="minimize-doomsday-modal-btn"
+          class="w-full py-2.5 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-tech font-bold uppercase tracking-wider text-sm transition shadow-[0_0_20px_rgba(16,185,129,0.4)]"
+        >
+          Acknowledge & Dock to Header
+        </button>
       </div>
-    </aside>
+    </div>
 
     <!-- ==============================================================
          2. MAIN NAVIGATION HEADER
          ============================================================== -->
-    <header class="main-header sticky top-0 z-20">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex flex-wrap items-center justify-between gap-4">
+    <header class="main-header sticky top-0 z-30">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-3">
         <!-- Logo & Branding -->
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-400 via-purple-600 to-emerald-500 p-[2px] shadow-lg shadow-cyan-500/20 flex-shrink-0">
-            <div class="w-full h-full bg-slate-900 rounded-[10px] flex items-center justify-center text-white font-orbitron font-extrabold text-xl">
-              M
-            </div>
+          <div class="w-9 h-9 rounded-lg bg-emerald-500 flex items-center justify-center text-slate-950 font-orbitron font-extrabold text-lg shadow-[0_0_15px_rgba(16,185,129,0.5)] flex-shrink-0">
+            D
           </div>
           <div>
-            <h1 class="font-orbitron font-extrabold text-xl sm:text-2xl tracking-wider holo-text">
+            <h1 class="font-orbitron font-extrabold text-lg sm:text-xl tracking-wider text-slate-900 dark:text-emerald-400">
               MARVEL MULTIVERSE
             </h1>
-            <p class="text-xs font-tech tracking-widest text-slate-500 dark:text-slate-400 uppercase font-semibold">
-              Chronological Holo-Database // S.H.I.E.L.D. Level 7
+            <p class="text-[10px] font-tech tracking-widest text-slate-500 uppercase font-semibold">
+              Chronological Holo-Archive • 179 Canon Entries
             </p>
           </div>
         </div>
 
-        <!-- Header Controls & Clearance Status -->
-        <div class="flex items-center gap-3 sm:gap-4 ml-auto">
-          <!-- Watched Tracker Pill -->
-          <div class="hidden sm:flex items-center gap-2 bg-slate-200/70 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700/60 rounded-full px-3.5 py-1">
-            <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
-            <span class="text-xs font-tech font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
-              Archived: <span id="header-watched-count" class="text-cyan-600 dark:text-cyan-400">0</span> / <span id="header-total-count">0</span>
-            </span>
-            <span id="header-progress-pct" class="text-xs font-orbitron font-bold text-emerald-600 dark:text-emerald-400 ml-1">0%</span>
-          </div>
-
-          <!-- Toggle Analytics Panel Button -->
+        <!-- Header Actions: Doomsday Pill + Watched + Theme -->
+        <div class="flex items-center gap-2 sm:gap-3">
+          <!-- Doomsday Logo Trigger Button (Shrunk state) -->
           <button
-            id="toggle-analytics-btn"
-            class="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-tech font-bold uppercase tracking-wider rounded-lg border border-slate-300 dark:border-slate-700 bg-white/70 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 hover:border-cyan-400 hover:text-cyan-400 transition"
-            title="Toggle Mission Analytics Charts"
+            id="doomsday-trigger-btn"
+            class="doomsday-header-pill"
+            title="Click to view Avengers: Doomsday Protocol"
           >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-            </svg>
-            Analytics HUD
+            <span class="pulse-beacon"></span>
+            <span class="font-bold">DOOMSDAY</span>
+            <span id="doom-header-countdown" class="text-xs opacity-90 hidden sm:inline">---d</span>
           </button>
 
-          <!-- Dark/Light Theme Toggle -->
+          <!-- Watched Status Badge -->
+          <div class="hidden md:flex items-center gap-2 bg-slate-200/60 dark:bg-slate-800/80 border border-emerald-500/20 rounded-full px-3 py-1">
+            <span class="text-xs font-tech font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">
+              Progress: <span id="header-watched-count" class="text-emerald-600 dark:text-emerald-400">0</span>/<span id="header-total-count">179</span>
+            </span>
+            <span id="header-progress-pct" class="text-xs font-orbitron font-bold text-emerald-600 dark:text-emerald-400">0%</span>
+          </div>
+
+          <!-- Analytics HUD Toggle -->
+          <button
+            id="toggle-analytics-btn"
+            class="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-tech font-bold uppercase tracking-wider rounded-lg border border-slate-300 dark:border-slate-800 bg-white/70 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 hover:border-emerald-500 hover:text-emerald-500 transition"
+            title="Toggle Mission Analytics"
+          >
+            Analytics
+          </button>
+
+          <!-- Dark/Light Mode Toggle -->
           <button
             id="dark-mode-toggle"
-            class="w-9 h-9 rounded-full flex items-center justify-center border border-slate-300 dark:border-cyan-400/30 bg-white/80 dark:bg-slate-800/80 text-slate-700 dark:text-cyan-400 hover:scale-105 transition"
-            title="Toggle Theme"
+            class="w-9 h-9 rounded-lg flex items-center justify-center border border-slate-300 dark:border-emerald-500/25 bg-white/80 dark:bg-slate-800/80 text-slate-700 dark:text-emerald-400 hover:scale-105 transition"
+            title="Toggle Light/Dark Theme"
           >
-            <!-- Sun Icon for Dark Mode -->
-            <svg id="theme-toggle-light-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <!-- Sun Icon -->
+            <svg id="theme-toggle-light-icon" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
             </svg>
-            <!-- Moon Icon for Light Mode -->
-            <svg id="theme-toggle-dark-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <!-- Moon Icon -->
+            <svg id="theme-toggle-dark-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
             </svg>
           </button>
         </div>
       </div>
-
-      <!-- Quick Era Jump Bar -->
-      <nav class="era-nav-bar py-2 px-4 sm:px-6 border-t border-slate-200/50 dark:border-slate-800/60">
-        <div class="max-w-7xl mx-auto flex items-center gap-2 text-xs">
-          <span class="text-[10px] font-tech uppercase tracking-widest text-slate-500 font-bold flex-shrink-0 mr-1">
-            Jump to Era:
-          </span>
-          <div id="era-nav-pills" class="flex items-center gap-1.5 flex-nowrap">
-            <!-- Dynamically populated era jump buttons -->
-          </div>
-        </div>
-      </nav>
     </header>
 
     <!-- ==============================================================
-         3. MAIN LAYOUT WORKSPACE
+         3. MAIN LAYOUT
          ============================================================== -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 md:py-8">
-      <!-- Collapsible Analytics Dashboard -->
-      <section id="analytics-section" class="ui-glasspanel mb-8 corner-accent p-6 ui-glass-panel">
+      <!-- Collapsible Analytics Section -->
+      <section id="analytics-section" class="ui-panel p-5 sm:p-6 mb-8 hidden">
         <div class="flex items-center justify-between mb-4 border-b border-slate-200 dark:border-slate-800 pb-3">
-          <h2 class="ui-panel-title text-cyan-600 dark:text-cyan-400">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
-            </svg>
-            MISSION METRICS & TIMELINE ANALYTICS
-          </h2>
-          <span class="text-xs font-tech text-slate-500 uppercase tracking-wider">Holo-Diagnostics</span>
+          <h2 class="ui-panel-title">MISSION OVERVIEW & ANALYTICS</h2>
+          <span class="text-xs font-tech text-slate-500 uppercase tracking-wider">Diagnostic Stream</span>
         </div>
 
-        <!-- Clearance Progress Meter -->
-        <div class="mb-6 bg-slate-200/50 dark:bg-slate-900/60 p-4 rounded-xl border border-slate-300 dark:border-slate-800">
+        <!-- Clearance Meter -->
+        <div class="mb-6 bg-slate-100 dark:bg-slate-900/60 p-4 rounded-xl border border-slate-200 dark:border-slate-800">
           <div class="flex items-center justify-between mb-2">
             <div class="flex items-center gap-2">
-              <span class="text-xs font-tech font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
-                Agent Clearance Level:
+              <span class="text-xs font-tech font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">Clearance Rank:</span>
+              <span id="clearance-rank" class="px-2.5 py-0.5 rounded text-xs font-orbitron font-bold text-emerald-500 bg-emerald-500/10 border border-emerald-500/30">
+                Level 1 - Civilian Contact
               </span>
-              <span id="clearance-rank" class="clearance-rank-badge">Level 1 - Civilian Contact</span>
             </div>
-            <span id="clearance-percentage" class="font-orbitron font-bold text-sm text-cyan-600 dark:text-cyan-400">0% Complete</span>
+            <span id="clearance-percentage" class="font-orbitron font-bold text-xs text-emerald-500">0% (0/179)</span>
           </div>
-          <div class="clearance-meter w-full">
-            <div id="progress-bar-fill" class="clearance-fill" style="width: 0%"></div>
-          </div>
-          <div class="flex justify-between items-center text-[11px] font-tech text-slate-500 mt-2">
-            <span>Entry 0: Eyes of Wakanda</span>
-            <span>Target: Logan (2029)</span>
+          <div class="progress-track w-full">
+            <div id="progress-bar-fill" class="progress-fill" style="width: 0%"></div>
           </div>
         </div>
 
-        <!-- Graphs Grid -->
+        <!-- Two Charts -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div class="bg-slate-100/60 dark:bg-slate-900/40 p-4 rounded-xl border border-slate-200 dark:border-slate-800/80">
-            <h3 class="font-orbitron text-xs font-bold uppercase tracking-wider text-center text-slate-700 dark:text-slate-300 mb-2">
-              Temporal Distribution by Decade
+          <div class="bg-slate-50 dark:bg-slate-900/40 p-4 rounded-xl border border-slate-200 dark:border-slate-800">
+            <h3 class="font-orbitron text-xs font-bold uppercase tracking-wider text-center text-slate-600 dark:text-slate-300 mb-2">
+              Releases by Decade
             </h3>
             <div class="chart-container">
               <canvas id="releasesByDecadeChart"></canvas>
             </div>
           </div>
-          <div class="bg-slate-100/60 dark:bg-slate-900/40 p-4 rounded-xl border border-slate-200 dark:border-slate-800/80">
-            <h3 class="font-orbitron text-xs font-bold uppercase tracking-wider text-center text-slate-700 dark:text-slate-300 mb-2">
-              Media Format Breakdown
+          <div class="bg-slate-50 dark:bg-slate-900/40 p-4 rounded-xl border border-slate-200 dark:border-slate-800">
+            <h3 class="font-orbitron text-xs font-bold uppercase tracking-wider text-center text-slate-600 dark:text-slate-300 mb-2">
+              Media Format Distribution
             </h3>
             <div class="chart-container">
               <canvas id="mediaTypeChart"></canvas>
@@ -247,59 +233,41 @@
         </div>
       </section>
 
-      <!-- Main Columns: Filters (Left) + Timeline (Right) -->
+      <!-- Main Workspace Grid: Desktop Sidebar (Left) + Timeline (Right) -->
       <div class="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
         <!-- ==============================================================
-             LEFT SIDEBAR: TACTICAL CONTROL DECK
+             DESKTOP FILTER CONTROLS (DOCKED ON DESKTOP, HIDDEN ON MOBILE)
              ============================================================== -->
-        <aside class="lg:col-span-1 lg:sticky lg:top-24 space-y-6">
-          <div class="ui-glass-panel corner-accent p-5">
+        <aside class="hidden lg:block lg:col-span-1 lg:sticky lg:top-20 space-y-5">
+          <div class="ui-panel p-5">
             <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3 mb-4">
-              <h2 class="ui-panel-title text-cyan-600 dark:text-cyan-400">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
-                </svg>
-                FILTERS
-              </h2>
-              <button
-                id="reset-filters"
-                class="text-[11px] font-tech uppercase tracking-wider text-cyan-600 dark:text-cyan-400 hover:underline"
-              >
-                Reset All
+              <h2 class="ui-panel-title">FILTER ARCHIVE</h2>
+              <button id="reset-filters" class="text-xs font-tech font-bold uppercase tracking-wider text-emerald-500 hover:underline">
+                Reset
               </button>
             </div>
 
             <div class="space-y-4">
-              <!-- Keyword Search -->
+              <!-- Search Input -->
               <div>
-                <label for="search-input" class="text-xs font-tech font-bold uppercase tracking-wider block mb-1.5 text-slate-600 dark:text-slate-400">
-                  Search Archive
+                <label for="search-input" class="text-xs font-tech font-bold uppercase tracking-wider block mb-1 text-slate-600 dark:text-slate-400">
+                  Keyword Search
                 </label>
                 <div class="relative">
-                  <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                    </svg>
-                  </span>
                   <input
                     type="text"
                     id="search-input"
-                    class="ui-search-input"
-                    placeholder="E.g., Avengers, Spider-Man, TVA..."
+                    class="ui-input pr-7"
+                    placeholder="Search titles, years, characters..."
                   />
-                  <button
-                    id="clear-search-btn"
-                    class="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-200 hidden"
-                  >
-                    ✕
-                  </button>
+                  <button id="clear-search-btn" class="absolute right-2 top-2 text-slate-400 hover:text-slate-200 text-xs hidden">✕</button>
                 </div>
               </div>
 
-              <!-- Era / Saga Select -->
+              <!-- Era Select -->
               <div>
-                <label for="era-select" class="text-xs font-tech font-bold uppercase tracking-wider block mb-1.5 text-slate-600 dark:text-slate-400">
-                  Saga / Era
+                <label for="era-select" class="text-xs font-tech font-bold uppercase tracking-wider block mb-1 text-slate-600 dark:text-slate-400">
+                  Era / Saga
                 </label>
                 <select id="era-select" class="ui-select">
                   <option value="all">All Sagas & Eras</option>
@@ -308,44 +276,41 @@
 
               <!-- Universe Sector Select -->
               <div>
-                <label for="universe-select" class="text-xs font-tech font-bold uppercase tracking-wider block mb-1.5 text-slate-600 dark:text-slate-400">
+                <label for="universe-select" class="text-xs font-tech font-bold uppercase tracking-wider block mb-1 text-slate-600 dark:text-slate-400">
                   Universe Sector
                 </label>
                 <select id="universe-select" class="ui-select">
-                  <option value="all">All Multiverse Realities</option>
+                  <option value="all">All Realities</option>
                 </select>
               </div>
 
-              <!-- Media Format Buttons -->
+              <!-- Multi-Select Media Formats -->
               <div>
-                <label class="text-xs font-tech font-bold uppercase tracking-wider block mb-2 text-slate-600 dark:text-slate-400">
-                  Media Format
-                </label>
+                <div class="flex justify-between items-center mb-1.5">
+                  <label class="text-xs font-tech font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
+                    Media Formats (Multi-Select)
+                  </label>
+                  <button id="clear-formats-btn" class="text-[10px] font-tech text-emerald-500 hover:underline uppercase">All</button>
+                </div>
                 <div id="type-buttons" class="flex flex-wrap gap-1.5">
-                  <!-- Dynamically populated media format pills -->
+                  <!-- Dynamically generated media format pills -->
                 </div>
               </div>
 
-              <!-- Quick Toggles -->
-              <div class="pt-3 border-t border-slate-200 dark:border-slate-800/80 space-y-2.5">
-                <!-- Unwatched only toggle -->
+              <!-- Toggles -->
+              <div class="pt-3 border-t border-slate-200 dark:border-slate-800 space-y-2">
                 <label class="flex items-center gap-2 cursor-pointer select-none">
-                  <input
-                    type="checkbox"
-                    id="unwatched-toggle"
-                    class="custom-checkbox flex-shrink-0"
-                  />
+                  <input type="checkbox" id="unwatched-toggle" class="custom-checkbox flex-shrink-0" />
                   <span class="text-xs font-tech font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                     Show Unwatched Only
                   </span>
                 </label>
 
-                <!-- Sort Order Toggle -->
-                <div class="flex items-center justify-between text-xs font-tech">
-                  <span class="font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">Sort Order:</span>
+                <div class="flex items-center justify-between text-xs font-tech pt-1">
+                  <span class="font-bold uppercase tracking-wider text-slate-500">Order:</span>
                   <button
                     id="sort-order-toggle"
-                    class="px-2.5 py-1 rounded-md border border-slate-300 dark:border-slate-700 bg-slate-200/50 dark:bg-slate-800/70 font-semibold text-cyan-600 dark:text-cyan-400 hover:border-cyan-400 transition"
+                    class="px-2.5 py-1 rounded bg-slate-200 dark:bg-slate-800 font-bold text-emerald-500 hover:bg-slate-300 dark:hover:bg-slate-700 transition"
                   >
                     Past → Future ▲
                   </button>
@@ -354,61 +319,45 @@
             </div>
           </div>
 
-          <!-- Quick Actions Panel -->
-          <div class="ui-glass-panel p-4 text-xs font-tech text-slate-500 dark:text-slate-400 space-y-2">
-            <div class="flex items-center justify-between">
-              <span>Database Version:</span>
-              <span class="text-emerald-500 font-bold">MCU v2026.3.8</span>
-            </div>
-            <div class="flex items-center justify-between">
-              <span>Canon Source:</span>
-              <span class="text-cyan-400 font-bold">Marvel Official Timeline</span>
-            </div>
-            <div class="pt-2 border-t border-slate-200 dark:border-slate-800 flex justify-between">
-              <button id="mark-all-watched-btn" class="hover:text-cyan-400 transition">Mark All as Watched</button>
-              <button id="clear-all-watched-btn" class="hover:text-rose-400 transition">Reset Watched</button>
-            </div>
+          <!-- Quick Utilities -->
+          <div class="ui-panel p-4 text-xs font-tech text-slate-500 dark:text-slate-400 flex justify-between items-center">
+            <button id="mark-all-watched-btn" class="hover:text-emerald-400 transition font-bold uppercase">Mark All Watched</button>
+            <span>•</span>
+            <button id="clear-all-watched-btn" class="hover:text-rose-400 transition font-bold uppercase">Reset Watched</button>
           </div>
         </aside>
 
         <!-- ==============================================================
-             RIGHT COLUMN: CHRONOLOGICAL TIMELINE STREAM
+             TIMELINE STREAM (RIGHT COLUMN)
              ============================================================== -->
-        <section class="lg:col-span-3">
-          <!-- Timeline Header Bar -->
-          <div class="flex flex-wrap items-center justify-between gap-3 mb-6 bg-slate-200/40 dark:bg-slate-900/40 p-3.5 rounded-xl border border-slate-300/60 dark:border-slate-800">
-            <div>
-              <h2 class="font-orbitron font-bold text-lg text-slate-900 dark:text-white flex items-center gap-2">
-                <span class="w-2.5 h-2.5 rounded-full bg-cyan-400"></span>
-                CHRONOLOGICAL DATABASE
-              </h2>
-              <p id="timeline-counter" class="text-xs font-tech text-slate-500 dark:text-slate-400 uppercase tracking-wider mt-0.5">
-                Displaying 179 entries
-              </p>
-            </div>
+        <section class="col-span-1 lg:col-span-3">
+          <!-- Timeline Results Summary -->
+          <div class="flex items-center justify-between gap-2 mb-6 bg-slate-100 dark:bg-slate-900/60 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
+            <span class="text-xs font-tech font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+              Timeline Stream
+            </span>
+            <span id="timeline-counter" class="text-xs font-tech text-emerald-500 font-bold uppercase tracking-wider">
+              179 Entries
+            </span>
           </div>
 
-          <!-- The Timeline Container -->
+          <!-- Timeline Items Container -->
           <div id="timeline-container" class="timeline-rail space-y-4">
-            <!-- Timeline Cards dynamically rendered here -->
+            <!-- Timeline Cards dynamically populated -->
           </div>
 
-          <!-- No Results State -->
-          <div id="no-results" class="hidden text-center py-16 px-4 bg-slate-200/30 dark:bg-slate-900/30 rounded-2xl border border-dashed border-slate-300 dark:border-slate-800">
-            <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-cyan-500/10 flex items-center justify-center text-cyan-400">
-              <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-              </svg>
-            </div>
-            <h3 class="font-orbitron text-lg font-bold text-slate-800 dark:text-slate-200 mb-1">
-              NO MATCHING TIMELINE RECORDS
+          <!-- No Matching Results Message -->
+          <div id="no-results" class="hidden text-center py-16 px-4 bg-slate-100 dark:bg-slate-900/40 rounded-2xl border border-dashed border-slate-300 dark:border-slate-800">
+            <h3 class="font-orbitron text-base font-bold text-slate-800 dark:text-slate-200 mb-1">
+              NO TIMELINE RECORDS FOUND
             </h3>
-            <p class="text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto mb-4">
-              No entries match the currently active filter protocols. Adjust your search keywords, era, or format filters.
+            <p class="text-xs text-slate-500 dark:text-slate-400 mb-4 font-tech">
+              Try adjusting your search keywords, universe, or media format selection.
             </p>
             <button
               id="no-results-reset-btn"
-              class="px-4 py-2 rounded-lg bg-cyan-500/20 border border-cyan-400 text-cyan-400 font-tech font-bold uppercase tracking-wider hover:bg-cyan-500/30 transition"
+              class="px-4 py-1.5 rounded-lg bg-emerald-500/20 border border-emerald-500 text-emerald-500 font-tech font-bold uppercase tracking-wider hover:bg-emerald-500/30 transition text-xs"
             >
               Reset Filters
             </button>
@@ -417,11 +366,98 @@
       </div>
     </main>
 
+    <!-- ==============================================================
+         4. MOBILE BOTTOM SHEET FILTER DRAWER
+         ============================================================== -->
+    <div id="mobile-drawer-backdrop" class="mobile-drawer-backdrop">
+      <div id="mobile-drawer" class="mobile-drawer">
+        <div class="drawer-drag-handle"></div>
+
+        <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3 mb-4">
+          <h2 class="ui-panel-title">TACTICAL FILTERS</h2>
+          <button id="close-mobile-drawer-btn" class="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:text-emerald-500 text-lg">
+            ✕
+          </button>
+        </div>
+
+        <div class="space-y-4 mb-6">
+          <!-- Mobile Search -->
+          <div>
+            <label for="mobile-search-input" class="text-xs font-tech font-bold uppercase tracking-wider block mb-1 text-slate-600 dark:text-slate-400">
+              Keyword Search
+            </label>
+            <input
+              type="text"
+              id="mobile-search-input"
+              class="ui-input"
+              placeholder="Search titles, years, characters..."
+            />
+          </div>
+
+          <!-- Mobile Era Select -->
+          <div>
+            <label for="mobile-era-select" class="text-xs font-tech font-bold uppercase tracking-wider block mb-1 text-slate-600 dark:text-slate-400">
+              Era / Saga
+            </label>
+            <select id="mobile-era-select" class="ui-select">
+              <option value="all">All Sagas & Eras</option>
+            </select>
+          </div>
+
+          <!-- Mobile Universe Select -->
+          <div>
+            <label for="mobile-universe-select" class="text-xs font-tech font-bold uppercase tracking-wider block mb-1 text-slate-600 dark:text-slate-400">
+              Universe Sector
+            </label>
+            <select id="mobile-universe-select" class="ui-select">
+              <option value="all">All Realities</option>
+            </select>
+          </div>
+
+          <!-- Mobile Formats -->
+          <div>
+            <label class="text-xs font-tech font-bold uppercase tracking-wider block mb-1.5 text-slate-600 dark:text-slate-400">
+              Media Formats (Multi-Select)
+            </label>
+            <div id="mobile-type-buttons" class="flex flex-wrap gap-1.5">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <!-- Mobile Toggles -->
+          <div class="space-y-2 pt-2 border-t border-slate-200 dark:border-slate-800">
+            <label class="flex items-center gap-2 cursor-pointer select-none">
+              <input type="checkbox" id="mobile-unwatched-toggle" class="custom-checkbox flex-shrink-0" />
+              <span class="text-xs font-tech font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                Show Unwatched Only
+              </span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Apply / Close Button -->
+        <button
+          id="apply-mobile-filter-btn"
+          class="w-full py-3 rounded-xl bg-emerald-500 text-slate-950 font-tech font-bold uppercase tracking-wider text-sm shadow-[0_0_15px_rgba(16,185,129,0.4)]"
+        >
+          Apply Filters & Close
+        </button>
+      </div>
+    </div>
+
+    <!-- Floating Mobile Filter Button -->
+    <button id="open-mobile-filter-btn" class="mobile-floating-filter-btn">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
+      </svg>
+      <span>Filters & Search</span>
+    </button>
+
     <!-- Footer -->
     <footer class="mt-16 border-t border-slate-200 dark:border-slate-800/80 py-8 text-center text-xs text-slate-500 font-tech uppercase tracking-wider">
       <div class="max-w-7xl mx-auto px-4">
-        <p>Marvel Multiverse Holo-Database • Level 7 Clearance</p>
-        <p class="mt-1 text-[11px] text-slate-400">Curated from Marvel Studios' Official Timeline, Disney+ Complete Canon, and Multi-Earth Records.</p>
+        <p>Marvel Multiverse Holo-Database • Doomsday Edition</p>
+        <p class="mt-1 text-[11px] text-slate-400">Official Timeline Order • Multi-Reality Chronological Canon</p>
       </div>
     </footer>
 

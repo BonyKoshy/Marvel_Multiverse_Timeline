@@ -1,39 +1,54 @@
-// js/main.js - Marvel Multiverse Holo-Database Main Logic
+// js/main.js - Marvel Multiverse Holo-Database (Doomsday Edition)
 document.addEventListener("DOMContentLoaded", () => {
   // --- STATE MANAGEMENT ---
   let decadeChart = null;
   let typeChart = null;
-  let activeTypeFilter = "all";
+  let selectedTypes = new Set(); // Multi-select media formats
   let sortAscending = true;
   let unwatchedOnly = false;
   let watchedItems = JSON.parse(localStorage.getItem("watchedItems")) || {};
 
   // --- SELECTORS ---
+  // Timeline & Counters
   const timelineContainer = document.getElementById("timeline-container");
   const timelineCounter = document.getElementById("timeline-counter");
   const noResults = document.getElementById("no-results");
   const noResultsResetBtn = document.getElementById("no-results-reset-btn");
+
+  // Desktop Filter Selectors
   const searchInput = document.getElementById("search-input");
   const clearSearchBtn = document.getElementById("clear-search-btn");
   const eraSelect = document.getElementById("era-select");
   const universeSelect = document.getElementById("universe-select");
   const typeButtonsContainer = document.getElementById("type-buttons");
-  const eraNavPillsContainer = document.getElementById("era-nav-pills");
+  const clearFormatsBtn = document.getElementById("clear-formats-btn");
   const unwatchedToggle = document.getElementById("unwatched-toggle");
   const sortOrderToggle = document.getElementById("sort-order-toggle");
   const resetFiltersButton = document.getElementById("reset-filters");
 
-  // Doomsday Timer Selectors
-  const doomDaysEl = document.getElementById("doom-days");
-  const doomHoursEl = document.getElementById("doom-hours");
-  const doomMinutesEl = document.getElementById("doom-minutes");
-  const doomSecondsEl = document.getElementById("doom-seconds");
-  const toggleDoomsdayBtn = document.getElementById("toggle-doomsday-banner");
-  const doomsdayWidget = document.getElementById("doomsday-widget");
-  const doomsdayTimerDisplay = document.getElementById("doomsday-timer-display");
-  const doomChevron = document.getElementById("doom-chevron");
+  // Mobile Drawer Selectors
+  const openMobileFilterBtn = document.getElementById("open-mobile-filter-btn");
+  const closeMobileDrawerBtn = document.getElementById("close-mobile-drawer-btn");
+  const applyMobileFilterBtn = document.getElementById("apply-mobile-filter-btn");
+  const mobileDrawerBackdrop = document.getElementById("mobile-drawer-backdrop");
+  const mobileSearchInput = document.getElementById("mobile-search-input");
+  const mobileEraSelect = document.getElementById("mobile-era-select");
+  const mobileUniverseSelect = document.getElementById("mobile-universe-select");
+  const mobileTypeButtonsContainer = document.getElementById("mobile-type-buttons");
+  const mobileUnwatchedToggle = document.getElementById("mobile-unwatched-toggle");
 
-  // Header & Analytics
+  // Doomsday Modal & Header Pill Selectors
+  const doomsdayModalBackdrop = document.getElementById("doomsday-modal-backdrop");
+  const closeDoomsdayModalBtn = document.getElementById("close-doomsday-modal-btn");
+  const minimizeDoomsdayModalBtn = document.getElementById("minimize-doomsday-modal-btn");
+  const doomsdayTriggerBtn = document.getElementById("doomsday-trigger-btn");
+  const doomHeaderCountdown = document.getElementById("doom-header-countdown");
+  const doomModalDays = document.getElementById("doom-modal-days");
+  const doomModalHours = document.getElementById("doom-modal-hours");
+  const doomModalMinutes = document.getElementById("doom-modal-minutes");
+  const doomModalSeconds = document.getElementById("doom-modal-seconds");
+
+  // Theme & Analytics Selectors
   const darkModeToggle = document.getElementById("dark-mode-toggle");
   const themeToggleDarkIcon = document.getElementById("theme-toggle-dark-icon");
   const themeToggleLightIcon = document.getElementById("theme-toggle-light-icon");
@@ -44,7 +59,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Media Type Icons Map
   const typeIcons = {
-    all: "🌐",
     Film: "🎬",
     "TV Series": "📺",
     Comic: "📚",
@@ -60,30 +74,30 @@ document.addEventListener("DOMContentLoaded", () => {
   function init() {
     initDarkMode();
     initDoomsdayTimer();
+    initDoomsdayModalLifecycle();
     initAnalyticsToggle();
     populateFilters();
-    populateEraJumpNav();
     setupEventListeners();
     createCharts();
     applyFilters();
   }
 
   // ==========================================================
-  // 1. DOOMSDAY COUNTDOWN TIMER
+  // 1. DOOMSDAY POPUP & COUNTDOWN
   // ==========================================================
-  function initDoomsdayTimer() {
-    // Avengers: Doomsday Theatrical Release Target: Dec 18, 2026 00:00:00 UTC
-    const doomsdayTarget = new Date("2026-12-18T00:00:00Z").getTime();
+  const DOOMSDAY_TARGET = new Date("2026-12-18T00:00:00Z").getTime();
 
+  function initDoomsdayTimer() {
     function updateCountdown() {
       const now = new Date().getTime();
-      const distance = doomsdayTarget - now;
+      const distance = DOOMSDAY_TARGET - now;
 
       if (distance <= 0) {
-        doomDaysEl.textContent = "00";
-        doomHoursEl.textContent = "00";
-        doomMinutesEl.textContent = "00";
-        doomSecondsEl.textContent = "00";
+        if (doomModalDays) doomModalDays.textContent = "00";
+        if (doomModalHours) doomModalHours.textContent = "00";
+        if (doomModalMinutes) doomModalMinutes.textContent = "00";
+        if (doomModalSeconds) doomModalSeconds.textContent = "00";
+        if (doomHeaderCountdown) doomHeaderCountdown.textContent = "NOW";
         return;
       }
 
@@ -92,26 +106,70 @@ document.addEventListener("DOMContentLoaded", () => {
       const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-      doomDaysEl.textContent = days.toLocaleString();
-      doomHoursEl.textContent = String(hours).padStart(2, "0");
-      doomMinutesEl.textContent = String(minutes).padStart(2, "0");
-      doomSecondsEl.textContent = String(seconds).padStart(2, "0");
+      if (doomModalDays) doomModalDays.textContent = days.toLocaleString();
+      if (doomModalHours) doomModalHours.textContent = String(hours).padStart(2, "0");
+      if (doomModalMinutes) doomModalMinutes.textContent = String(minutes).padStart(2, "0");
+      if (doomModalSeconds) doomModalSeconds.textContent = String(seconds).padStart(2, "0");
+
+      if (doomHeaderCountdown) doomHeaderCountdown.textContent = `${days}d ${hours}h`;
     }
 
     updateCountdown();
     setInterval(updateCountdown, 1000);
+  }
 
-    // Collapsed State from localStorage
-    const isCollapsed = localStorage.getItem("doomsday-collapsed") === "true";
-    if (isCollapsed && doomsdayTimerDisplay) {
-      doomsdayTimerDisplay.classList.add("hidden");
-      doomChevron.classList.add("rotate-180");
+  function openDoomsdayModal() {
+    if (doomsdayModalBackdrop) {
+      doomsdayModalBackdrop.classList.add("active");
+    }
+  }
+
+  function closeDoomsdayModal() {
+    if (doomsdayModalBackdrop) {
+      doomsdayModalBackdrop.classList.remove("active");
+    }
+  }
+
+  function initDoomsdayModalLifecycle() {
+    // Show modal on first page visit in this session
+    const hasSeenModal = sessionStorage.getItem("doomsday-shown");
+    if (!hasSeenModal) {
+      setTimeout(() => {
+        openDoomsdayModal();
+        sessionStorage.setItem("doomsday-shown", "true");
+        // Auto-shrink to logo after 4.5 seconds if user hasn't clicked
+        setTimeout(() => {
+          closeDoomsdayModal();
+        }, 4500);
+      }, 500);
     }
 
-    toggleDoomsdayBtn.addEventListener("click", () => {
-      const hidden = doomsdayTimerDisplay.classList.toggle("hidden");
-      doomChevron.classList.toggle("rotate-180", hidden);
-      localStorage.setItem("doomsday-collapsed", hidden ? "true" : "false");
+    // Modal triggers
+    if (doomsdayTriggerBtn) {
+      doomsdayTriggerBtn.addEventListener("click", openDoomsdayModal);
+    }
+    if (closeDoomsdayModalBtn) {
+      closeDoomsdayModalBtn.addEventListener("click", closeDoomsdayModal);
+    }
+    if (minimizeDoomsdayModalBtn) {
+      minimizeDoomsdayModalBtn.addEventListener("click", closeDoomsdayModal);
+    }
+
+    // Close on backdrop click
+    if (doomsdayModalBackdrop) {
+      doomsdayModalBackdrop.addEventListener("click", (e) => {
+        if (e.target === doomsdayModalBackdrop) {
+          closeDoomsdayModal();
+        }
+      });
+    }
+
+    // Close on Escape key
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        closeDoomsdayModal();
+        closeMobileDrawer();
+      }
     });
   }
 
@@ -147,23 +205,24 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function initAnalyticsToggle() {
-    const isCollapsed = localStorage.getItem("analytics-collapsed") === "true";
-    if (isCollapsed && analyticsSection) {
-      analyticsSection.classList.add("hidden");
+    const isCollapsed = localStorage.getItem("analytics-collapsed") !== "false"; // Default hidden
+    if (!isCollapsed && analyticsSection) {
+      analyticsSection.classList.remove("hidden");
+      toggleAnalyticsBtn.classList.add("border-emerald-500", "text-emerald-500");
     }
 
     if (toggleAnalyticsBtn && analyticsSection) {
       toggleAnalyticsBtn.addEventListener("click", () => {
-        const hidden = analyticsSection.classList.toggle("hidden");
-        localStorage.setItem("analytics-collapsed", hidden ? "true" : "false");
-        toggleAnalyticsBtn.classList.toggle("border-cyan-400", !hidden);
-        toggleAnalyticsBtn.classList.toggle("text-cyan-400", !hidden);
+        const isHidden = analyticsSection.classList.toggle("hidden");
+        localStorage.setItem("analytics-collapsed", isHidden ? "true" : "false");
+        toggleAnalyticsBtn.classList.toggle("border-emerald-500", !isHidden);
+        toggleAnalyticsBtn.classList.toggle("text-emerald-500", !isHidden);
       });
     }
   }
 
   // ==========================================================
-  // 3. FILTER PROTOCOLS & CONTROLS
+  // 3. FILTER POPULATION (DESKTOP & MOBILE)
   // ==========================================================
   function getUniqueValues(key) {
     const values = marvelData.map((item) => item[key]);
@@ -171,51 +230,50 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function populateFilters() {
-    // Eras in chronological order
+    // Unique Eras
     const eras = getUniqueValues("era");
     eras.forEach((era) => {
-      const option = document.createElement("option");
-      option.value = era;
-      option.textContent = era;
-      eraSelect.appendChild(option);
+      const opt = document.createElement("option");
+      opt.value = era;
+      opt.textContent = era;
+      eraSelect.appendChild(opt);
+
+      const mOpt = opt.cloneNode(true);
+      mobileEraSelect.appendChild(mOpt);
     });
 
-    // Universes sorted alphabetically
+    // Unique Universes
     const universes = getUniqueValues("universe").sort();
     universes.forEach((universe) => {
-      const option = document.createElement("option");
-      option.value = universe;
-      option.textContent = universe;
-      universeSelect.appendChild(option);
+      const opt = document.createElement("option");
+      opt.value = universe;
+      opt.textContent = universe;
+      universeSelect.appendChild(opt);
+
+      const mOpt = opt.cloneNode(true);
+      mobileUniverseSelect.appendChild(mOpt);
     });
 
-    // Types with icons
-    const types = ["all", ...getUniqueValues("type").sort()];
-    typeButtonsContainer.innerHTML = types
-      .map((type) => {
-        const icon = typeIcons[type] || "🔹";
-        return `
-          <button data-type="${type}" class="media-pill ${type === "all" ? "active" : ""}">
-            <span>${icon}</span>
-            <span>${type === "all" ? "All Formats" : type}</span>
-          </button>
-        `;
-      })
-      .join("");
+    // Unique Types for Multi-Select Pills
+    const types = getUniqueValues("type").sort();
+    renderFormatPills(types);
   }
 
-  function populateEraJumpNav() {
-    const eras = getUniqueValues("era");
-    eraNavPillsContainer.innerHTML = eras
-      .map((era) => {
-        const safeId = era.replace(/[^a-zA-Z0-9]/g, "-").toLowerCase();
-        return `
-          <button data-target="era-${safeId}" class="era-chip">
-            ${era}
-          </button>
-        `;
-      })
-      .join("");
+  function renderFormatPills(types) {
+    const renderPillHTML = (type) => {
+      const icon = typeIcons[type] || "🔹";
+      const isSelected = selectedTypes.has(type);
+      return `
+        <button type="button" data-type="${type}" class="media-pill ${isSelected ? "active" : ""}">
+          <span>${icon}</span>
+          <span>${type}</span>
+        </button>
+      `;
+    };
+
+    const pillsHTML = types.map(renderPillHTML).join("");
+    typeButtonsContainer.innerHTML = pillsHTML;
+    mobileTypeButtonsContainer.innerHTML = pillsHTML;
   }
 
   // ==========================================================
@@ -226,68 +284,59 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (items.length === 0) {
       noResults.classList.remove("hidden");
-      timelineCounter.textContent = "0 entries found";
+      timelineCounter.textContent = "0 entries";
       return;
     }
 
     noResults.classList.add("hidden");
-    timelineCounter.textContent = `Displaying ${items.length} of ${marvelData.length} archived entries`;
+    timelineCounter.textContent = `${items.length} of ${marvelData.length} entries`;
 
-    // Group items by Era to create clear visual chapters
+    // Group items by Era with clean headers
     let currentEra = null;
 
-    items.forEach((item, index) => {
-      // Check if era changed, if so create Era Banner
+    items.forEach((item) => {
       if (item.era !== currentEra) {
         currentEra = item.era;
-        const safeId = currentEra.replace(/[^a-zA-Z0-9]/g, "-").toLowerCase();
-        const eraItemsCount = items.filter((i) => i.era === currentEra).length;
+        const eraCount = items.filter((i) => i.era === currentEra).length;
 
         const eraDiv = document.createElement("div");
-        eraDiv.id = `era-${safeId}`;
         eraDiv.className = "era-divider";
         eraDiv.innerHTML = `
           <div class="era-banner">
-            <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_8px_#00f5ff]"></span>
-            <h3 class="era-title text-slate-900 dark:text-cyan-400">${currentEra}</h3>
-            <span class="text-xs font-tech font-bold text-slate-500 uppercase tracking-wider ml-1">
-              (${eraItemsCount} ${eraItemsCount === 1 ? "entry" : "entries"})
+            <span class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_#10b981]"></span>
+            <h3 class="era-title">${currentEra}</h3>
+            <span class="text-[11px] font-tech font-bold text-slate-500 ml-1">
+              (${eraCount})
             </span>
           </div>
         `;
         timelineContainer.appendChild(eraDiv);
       }
 
-      // Render Item Card
+      // Render Card
       const isWatched = !!watchedItems[item.title];
       const typeIcon = typeIcons[item.type] || "🔹";
+      const isDoomsday = item.title.includes("Doomsday");
 
       const cardDiv = document.createElement("div");
-      cardDiv.className = "timeline-item relative mb-5 pl-8";
+      cardDiv.className = "timeline-item relative mb-4 pl-7 sm:pl-8";
       cardDiv.innerHTML = `
         <div class="timeline-node"></div>
         <div data-title="${item.title}" class="timeline-card ${isWatched ? "watched" : ""}">
-          <div class="flex justify-between items-start gap-4">
+          <div class="flex justify-between items-start gap-3">
             <div class="flex-1 min-w-0">
-              <div class="flex items-center gap-2 flex-wrap mb-1.5">
-                <span class="badge-year">
-                  ⏱️ ${item.year}
-                </span>
-                <span class="badge-tag badge-universe">
-                  🌐 ${item.universe}
-                </span>
-                <span class="badge-tag badge-type">
-                  ${typeIcon} ${item.type}
-                </span>
+              <div class="flex items-center gap-1.5 flex-wrap mb-1.5">
+                <span class="badge-year">⏱️ ${item.year}</span>
+                <span class="badge-tag">🌐 ${item.universe}</span>
+                <span class="badge-tag">${typeIcon} ${item.type}</span>
               </div>
-              <h4 class="timeline-title font-orbitron font-bold text-base sm:text-lg text-slate-900 dark:text-white tracking-wide truncate">
+              <h4 class="card-title font-orbitron font-bold text-sm sm:text-base text-slate-900 dark:text-slate-100 tracking-wide truncate">
                 ${item.title}
               </h4>
             </div>
 
-            <!-- Watched Toggle Checkbox -->
-            <div class="flex-shrink-0 flex items-center gap-2 pt-1">
-              <label class="cursor-pointer" title="Mark as Watched / Completed">
+            <div class="flex-shrink-0 flex items-center pt-0.5">
+              <label class="cursor-pointer" title="Mark as Watched">
                 <input
                   type="checkbox"
                   data-title="${item.title}"
@@ -304,14 +353,14 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ==========================================================
-  // 5. PROGRESS & GAMIFIED CLEARANCE RANK
+  // 5. PROGRESS & CLEARANCE LEVEL
   // ==========================================================
   function updateProgress() {
     const total = marvelData.length;
     const watchedCount = Object.keys(watchedItems).length;
     const percentage = total > 0 ? Math.round((watchedCount / total) * 100) : 0;
 
-    // Header counters
+    // Header counter
     const headerWatched = document.getElementById("header-watched-count");
     const headerTotal = document.getElementById("header-total-count");
     const headerPct = document.getElementById("header-progress-pct");
@@ -325,14 +374,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const clearanceRank = document.getElementById("clearance-rank");
 
     if (progressBarFill) progressBarFill.style.width = `${percentage}%`;
-    if (clearancePct) clearancePct.textContent = `${percentage}% Complete (${watchedCount}/${total})`;
+    if (clearancePct) clearancePct.textContent = `${percentage}% (${watchedCount}/${total})`;
 
-    // Determine Clearance Rank
+    // Rank text
     let rankText = "Level 1 - Civilian Contact";
-    if (percentage >= 100) rankText = "Omnipresent - The Watcher (Multiverse Cleared!)";
-    else if (percentage >= 85) rankText = "Level 10 - S.H.I.E.L.D. Director (Fury Clearance)";
+    if (percentage >= 100) rankText = "Omnipresent - The Watcher";
+    else if (percentage >= 85) rankText = "Level 10 - S.H.I.E.L.D. Director";
     else if (percentage >= 70) rankText = "Level 8 - Regional Specialist";
-    else if (percentage >= 50) rankText = "Level 7 - Tactical Command (Coulson Clearance)";
+    else if (percentage >= 50) rankText = "Level 7 - Tactical Command";
     else if (percentage >= 30) rankText = "Level 5 - Strike Team Operative";
     else if (percentage >= 15) rankText = "Level 3 - Field Agent";
     else if (percentage > 0) rankText = "Level 2 - Recruited Asset";
@@ -341,13 +390,13 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ==========================================================
-  // 6. ANALYTICS & CHARTS
+  // 6. CHARTS (DOOMSDAY EMERALD / TITANIUM PALETTE)
   // ==========================================================
   function createCharts() {
     const isDark = document.documentElement.classList.contains("dark");
-    const gridColor = isDark ? "rgba(0, 245, 255, 0.08)" : "rgba(0, 0, 0, 0.06)";
+    const gridColor = isDark ? "rgba(16, 185, 129, 0.08)" : "rgba(0, 0, 0, 0.05)";
     const textColor = isDark ? "#94a3b8" : "#475569";
-    const accent = isDark ? "#00f5ff" : "#0284c7";
+    const accent = isDark ? "#10b981" : "#059669";
 
     const decadeCtx = document.getElementById("releasesByDecadeChart")?.getContext("2d");
     if (decadeCtx) {
@@ -357,10 +406,10 @@ document.addEventListener("DOMContentLoaded", () => {
           labels: [],
           datasets: [
             {
-              label: "Timeline Entries",
+              label: "Entries",
               data: [],
               backgroundColor: accent,
-              borderRadius: 6,
+              borderRadius: 4,
               borderWidth: 0,
             },
           ],
@@ -372,20 +421,20 @@ document.addEventListener("DOMContentLoaded", () => {
             y: {
               beginAtZero: true,
               grid: { color: gridColor },
-              ticks: { color: textColor, font: { family: "Rajdhani", size: 12 } },
+              ticks: { color: textColor, font: { family: "Rajdhani", size: 11 } },
             },
             x: {
               grid: { color: gridColor },
-              ticks: { color: textColor, font: { family: "Rajdhani", size: 12 } },
+              ticks: { color: textColor, font: { family: "Rajdhani", size: 11 } },
             },
           },
           plugins: {
             legend: { display: false },
             tooltip: {
-              backgroundColor: isDark ? "#0b1120" : "#ffffff",
-              titleColor: isDark ? "#00f5ff" : "#0284c7",
+              backgroundColor: isDark ? "#0d1322" : "#ffffff",
+              titleColor: "#10b981",
               bodyColor: isDark ? "#f8fafc" : "#0f172a",
-              borderColor: isDark ? "#00f5ff" : "#0284c7",
+              borderColor: "#10b981",
               borderWidth: 1,
               titleFont: { family: "Orbitron" },
               bodyFont: { family: "Rajdhani" },
@@ -403,22 +452,22 @@ document.addEventListener("DOMContentLoaded", () => {
           labels: [],
           datasets: [
             {
-              label: "Format Distribution",
+              label: "Format Count",
               data: [],
               backgroundColor: [
-                "#00f5ff",
-                "#b366ff",
                 "#10b981",
-                "#f59e0b",
-                "#ef4444",
-                "#38bdf8",
-                "#e879f9",
-                "#facc15",
+                "#059669",
+                "#34d399",
+                "#047857",
+                "#6ee7b7",
+                "#064e3b",
+                "#022c22",
+                "#a7f3d0",
                 "#64748b",
               ],
               hoverOffset: 6,
-              borderColor: isDark ? "#0b1120" : "#ffffff",
-              borderWidth: 3,
+              borderColor: isDark ? "#0d1322" : "#ffffff",
+              borderWidth: 2,
             },
           ],
         },
@@ -430,15 +479,15 @@ document.addEventListener("DOMContentLoaded", () => {
               position: "bottom",
               labels: {
                 color: textColor,
-                boxWidth: 12,
+                boxWidth: 10,
                 font: { family: "Rajdhani", size: 11, weight: "bold" },
               },
             },
             tooltip: {
-              backgroundColor: isDark ? "#0b1120" : "#ffffff",
-              titleColor: isDark ? "#00f5ff" : "#0284c7",
+              backgroundColor: isDark ? "#0d1322" : "#ffffff",
+              titleColor: "#10b981",
               bodyColor: isDark ? "#f8fafc" : "#0f172a",
-              borderColor: isDark ? "#00f5ff" : "#0284c7",
+              borderColor: "#10b981",
               borderWidth: 1,
             },
           },
@@ -483,14 +532,13 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ==========================================================
-  // 7. FILTER APPLICATION & EVENT HANDLING
+  // 7. FILTER APPLICATION
   // ==========================================================
   function applyFilters() {
     const searchTerm = searchInput.value.trim().toLowerCase();
     const selectedEra = eraSelect.value;
     const selectedUniverse = universeSelect.value;
 
-    // Toggle Clear button visibility
     clearSearchBtn.classList.toggle("hidden", searchTerm.length === 0);
 
     const filtered = marvelData.filter((item) => {
@@ -502,7 +550,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const matchesEra = selectedEra === "all" || item.era === selectedEra;
       const matchesUniverse = selectedUniverse === "all" || item.universe === selectedUniverse;
-      const matchesType = activeTypeFilter === "all" || item.type === activeTypeFilter;
+      const matchesType = selectedTypes.size === 0 || selectedTypes.has(item.type);
       const matchesUnwatched = !unwatchedOnly || !watchedItems[item.title];
 
       return matchesSearch && matchesEra && matchesUniverse && matchesType && matchesUnwatched;
@@ -520,113 +568,193 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function resetAll() {
     searchInput.value = "";
+    mobileSearchInput.value = "";
     clearSearchBtn.classList.add("hidden");
     eraSelect.value = "all";
+    mobileEraSelect.value = "all";
     universeSelect.value = "all";
-    activeTypeFilter = "all";
+    mobileUniverseSelect.value = "all";
+    selectedTypes.clear();
     sortAscending = true;
     unwatchedOnly = false;
     unwatchedToggle.checked = false;
+    mobileUnwatchedToggle.checked = false;
     sortOrderToggle.textContent = "Past → Future ▲";
 
     document
       .querySelectorAll(".media-pill")
-      .forEach((btn) => btn.classList.toggle("active", btn.dataset.type === "all"));
+      .forEach((btn) => btn.classList.remove("active"));
 
     applyFilters();
   }
 
-  // Handle Watched Checkbox Click
-  function handleTimelineClick(e) {
-    const checkbox = e.target.closest(".watched-checkbox");
-    if (!checkbox) return;
-
-    const title = checkbox.dataset.title;
-    const card = checkbox.closest(".timeline-card");
-
-    if (checkbox.checked) {
-      watchedItems[title] = true;
-      if (card) card.classList.add("watched");
-
-      // Confetti burst
-      const rect = checkbox.getBoundingClientRect();
-      confetti({
-        particleCount: 80,
-        spread: 60,
-        origin: {
-          x: (rect.left + rect.width / 2) / window.innerWidth,
-          y: (rect.top + rect.height / 2) / window.innerHeight,
-        },
-        colors: ["#00f5ff", "#10b981", "#b366ff", "#fbbf24"],
-      });
-    } else {
-      delete watchedItems[title];
-      if (card) card.classList.remove("watched");
-    }
-
-    localStorage.setItem("watchedItems", JSON.stringify(watchedItems));
-    updateProgress();
-
-    // If unwatched-only is active, re-filter
-    if (unwatchedOnly) {
-      applyFilters();
+  // ==========================================================
+  // 8. MOBILE DRAWER HANDLING
+  // ==========================================================
+  function openMobileDrawer() {
+    if (mobileDrawerBackdrop) {
+      mobileDrawerBackdrop.classList.add("active");
+      document.body.style.overflow = "hidden";
     }
   }
 
+  function closeMobileDrawer() {
+    if (mobileDrawerBackdrop) {
+      mobileDrawerBackdrop.classList.remove("active");
+      document.body.style.overflow = "";
+    }
+  }
+
+  // ==========================================================
+  // 9. EVENT LISTENERS
+  // ==========================================================
   function setupEventListeners() {
     // Dark mode toggle
     darkModeToggle.addEventListener("click", toggleDarkMode);
 
-    // Search & Filter controls
-    searchInput.addEventListener("input", applyFilters);
+    // Desktop search & filter controls
+    searchInput.addEventListener("input", () => {
+      mobileSearchInput.value = searchInput.value;
+      applyFilters();
+    });
     clearSearchBtn.addEventListener("click", () => {
       searchInput.value = "";
+      mobileSearchInput.value = "";
       applyFilters();
     });
 
-    eraSelect.addEventListener("change", applyFilters);
-    universeSelect.addEventListener("change", applyFilters);
+    eraSelect.addEventListener("change", () => {
+      mobileEraSelect.value = eraSelect.value;
+      applyFilters();
+    });
+    universeSelect.addEventListener("change", () => {
+      mobileUniverseSelect.value = universeSelect.value;
+      applyFilters();
+    });
+
+    // Mobile drawer sync
+    mobileSearchInput.addEventListener("input", () => {
+      searchInput.value = mobileSearchInput.value;
+      applyFilters();
+    });
+    mobileEraSelect.addEventListener("change", () => {
+      eraSelect.value = mobileEraSelect.value;
+      applyFilters();
+    });
+    mobileUniverseSelect.addEventListener("change", () => {
+      universeSelect.value = mobileUniverseSelect.value;
+      applyFilters();
+    });
+
+    // Mobile drawer open/close
+    if (openMobileFilterBtn) openMobileFilterBtn.addEventListener("click", openMobileDrawer);
+    if (closeMobileDrawerBtn) closeMobileDrawerBtn.addEventListener("click", closeMobileDrawer);
+    if (applyMobileFilterBtn) applyMobileFilterBtn.addEventListener("click", closeMobileDrawer);
+    if (mobileDrawerBackdrop) {
+      mobileDrawerBackdrop.addEventListener("click", (e) => {
+        if (e.target === mobileDrawerBackdrop) closeMobileDrawer();
+      });
+    }
+
+    // Reset filters
     resetFiltersButton.addEventListener("click", resetAll);
     noResultsResetBtn.addEventListener("click", resetAll);
 
-    // Unwatched toggle
+    // Unwatched toggles
     unwatchedToggle.addEventListener("change", (e) => {
       unwatchedOnly = e.target.checked;
+      mobileUnwatchedToggle.checked = unwatchedOnly;
+      applyFilters();
+    });
+    mobileUnwatchedToggle.addEventListener("change", (e) => {
+      unwatchedOnly = e.target.checked;
+      unwatchedToggle.checked = unwatchedOnly;
       applyFilters();
     });
 
-    // Sort Order toggle
+    // Sort toggle
     sortOrderToggle.addEventListener("click", () => {
       sortAscending = !sortAscending;
       sortOrderToggle.textContent = sortAscending ? "Past → Future ▲" : "Future → Past ▼";
       applyFilters();
     });
 
-    // Media Type filter buttons
+    // Multi-Select Media Format Handler (works for both desktop and mobile buttons)
+    const handleFormatPillClick = (btn) => {
+      const type = btn.dataset.type;
+      if (selectedTypes.has(type)) {
+        selectedTypes.delete(type);
+      } else {
+        selectedTypes.add(type);
+      }
+
+      // Sync active classes across desktop and mobile pills
+      document.querySelectorAll(`.media-pill[data-type="${type}"]`).forEach((b) => {
+        b.classList.toggle("active", selectedTypes.has(type));
+      });
+
+      applyFilters();
+    };
+
     typeButtonsContainer.addEventListener("click", (e) => {
       const btn = e.target.closest(".media-pill");
-      if (!btn) return;
-      activeTypeFilter = btn.dataset.type;
-      document
-        .querySelectorAll(".media-pill")
-        .forEach((b) => b.classList.remove("active"));
-      btn.classList.add("active");
-      applyFilters();
+      if (btn) handleFormatPillClick(btn);
     });
 
-    // Quick Era Jump Navigation
-    eraNavPillsContainer.addEventListener("click", (e) => {
-      const chip = e.target.closest(".era-chip");
-      if (!chip) return;
-      const targetId = chip.dataset.target;
-      const targetEl = document.getElementById(targetId);
-      if (targetEl) {
-        targetEl.scrollIntoView({ behavior: "smooth", block: "start" });
+    mobileTypeButtonsContainer.addEventListener("click", (e) => {
+      const btn = e.target.closest(".media-pill");
+      if (btn) handleFormatPillClick(btn);
+    });
+
+    if (clearFormatsBtn) {
+      clearFormatsBtn.addEventListener("click", () => {
+        selectedTypes.clear();
+        document.querySelectorAll(".media-pill").forEach((b) => b.classList.remove("active"));
+        applyFilters();
+      });
+    }
+
+    // Watched Checkbox & Card Click
+    timelineContainer.addEventListener("click", (e) => {
+      const card = e.target.closest(".timeline-card");
+      const checkbox = e.target.closest(".watched-checkbox");
+
+      // If user clicked Avengers: Doomsday card (outside checkbox), open the Doomsday modal!
+      if (card && !checkbox && card.dataset.title && card.dataset.title.includes("Doomsday")) {
+        openDoomsdayModal();
+        return;
+      }
+
+      if (!checkbox) return;
+
+      const title = checkbox.dataset.title;
+      if (checkbox.checked) {
+        watchedItems[title] = true;
+        if (card) card.classList.add("watched");
+
+        // Confetti
+        const rect = checkbox.getBoundingClientRect();
+        confetti({
+          particleCount: 60,
+          spread: 50,
+          origin: {
+            x: (rect.left + rect.width / 2) / window.innerWidth,
+            y: (rect.top + rect.height / 2) / window.innerHeight,
+          },
+          colors: ["#10b981", "#34d399", "#fbbf24"],
+        });
+      } else {
+        delete watchedItems[title];
+        if (card) card.classList.remove("watched");
+      }
+
+      localStorage.setItem("watchedItems", JSON.stringify(watchedItems));
+      updateProgress();
+
+      if (unwatchedOnly) {
+        applyFilters();
       }
     });
-
-    // Watched card clicks
-    timelineContainer.addEventListener("click", handleTimelineClick);
 
     // Bulk Actions
     markAllWatchedBtn.addEventListener("click", () => {
@@ -636,7 +764,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         localStorage.setItem("watchedItems", JSON.stringify(watchedItems));
         applyFilters();
-        confetti({ particleCount: 200, spread: 100, origin: { y: 0.6 } });
+        confetti({ particleCount: 150, spread: 90, origin: { y: 0.6 } });
       }
     });
 
