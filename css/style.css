@@ -2,35 +2,40 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@500;600;700&display=swap');
 
 :root {
-    /* Fonts */
+    /* Typography */
     --font-heading: 'Orbitron', -apple-system, sans-serif;
     --font-tech: 'Rajdhani', -apple-system, sans-serif;
     --font-body: 'Inter', -apple-system, sans-serif;
 
-    /* Single Unified Prestige Palette: DOOMSDAY EMERALD & TITANIUM */
+    /* Consistent Standardized Corner Radii */
+    --radius-sm: 6px;       /* Badges, checkboxes */
+    --radius-md: 8px;       /* Buttons, inputs, selects, pills, digit cards */
+    --radius-lg: 12px;      /* Cards, headers, banners */
+    --radius-xl: 16px;      /* Modals, panels, drawers */
+    --radius-full: 9999px;  /* Round toggles, status pills */
+
+    /* Unified Single Palette: DOOMSDAY EMERALD & TITANIUM DARK */
     /* Light Theme */
     --bg-light: #f8fafc;
     --surface-light: #ffffff;
-    --surface-glass-light: rgba(255, 255, 255, 0.88);
+    --surface-glass-light: rgba(255, 255, 255, 0.94);
     --panel-border-light: rgba(16, 185, 129, 0.25);
     --text-primary-light: #0f172a;
     --text-secondary-light: #475569;
     --text-muted-light: #94a3b8;
     --accent-emerald: #059669;
     --accent-emerald-glow: rgba(5, 150, 105, 0.2);
-    --accent-gold: #d97706;
 
-    /* Dark Theme (Primary Doomsday Terminal) */
+    /* Dark Theme */
     --bg-dark: #070a12;
     --surface-dark: #0d1322;
-    --surface-glass-dark: rgba(13, 19, 34, 0.85);
+    --surface-glass-dark: rgba(13, 19, 34, 0.92);
     --panel-border-dark: rgba(16, 185, 129, 0.22);
     --text-primary-dark: #f8fafc;
     --text-secondary-dark: #94a3b8;
     --text-muted-dark: #64748b;
     --accent-emerald: #10b981;
     --accent-emerald-glow: rgba(16, 185, 129, 0.35);
-    --accent-gold: #fbbf24;
 }
 
 *, *::before, *::after {
@@ -43,10 +48,10 @@ body {
     background-color: var(--bg-light);
     color: var(--text-primary-light);
     font-family: var(--font-body);
-    transition: background-color 0.3s ease, color 0.3s ease;
+    transition: background-color 0.25s ease, color 0.25s ease;
     min-height: 100vh;
     overflow-x: hidden;
-    padding-bottom: 5rem; /* Space for mobile floating bar */
+    padding-bottom: 5.5rem; /* Space for floating mobile bar */
 }
 
 html.dark body {
@@ -81,7 +86,7 @@ html.dark #background-pattern {
         linear-gradient(90deg, rgba(16, 185, 129, 0.04) 1px, transparent 1px);
 }
 
-/* Fonts */
+/* Typography Helpers */
 .font-orbitron { font-family: var(--font-heading); }
 .font-tech { font-family: var(--font-tech); }
 
@@ -90,7 +95,7 @@ html.dark #background-pattern {
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
     background: rgba(16, 185, 129, 0.25);
-    border-radius: 9999px;
+    border-radius: var(--radius-full);
 }
 ::-webkit-scrollbar-thumb:hover {
     background: rgba(16, 185, 129, 0.5);
@@ -102,7 +107,7 @@ html.dark #background-pattern {
 .doomsday-modal-backdrop {
     position: fixed;
     inset: 0;
-    background: rgba(5, 7, 14, 0.82);
+    background: rgba(5, 7, 14, 0.88);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     z-index: 100;
@@ -112,7 +117,7 @@ html.dark #background-pattern {
     padding: 1rem;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .doomsday-modal-backdrop.active {
@@ -121,10 +126,10 @@ html.dark #background-pattern {
 }
 
 .doomsday-modal-content {
-    background: linear-gradient(135deg, rgba(13, 19, 34, 0.96) 0%, rgba(7, 10, 18, 0.98) 100%);
+    background: linear-gradient(135deg, rgba(13, 19, 34, 0.98) 0%, rgba(7, 10, 18, 0.99) 100%);
     border: 2px solid #10b981;
     box-shadow: 0 0 50px rgba(16, 185, 129, 0.35), inset 0 0 30px rgba(16, 185, 129, 0.08);
-    border-radius: 20px;
+    border-radius: var(--radius-xl);
     max-width: 480px;
     width: 100%;
     overflow: hidden;
@@ -134,7 +139,7 @@ html.dark #background-pattern {
 }
 
 html:not(.dark) .doomsday-modal-content {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(240, 253, 244, 0.95) 100%);
+    background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
     border-color: #059669;
     box-shadow: 0 10px 40px rgba(5, 150, 105, 0.25);
 }
@@ -160,12 +165,17 @@ html:not(.dark) .doomsday-modal-content {
 }
 
 .doomsday-digit-card {
-    background: rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(16, 185, 129, 0.4);
+    background: rgba(0, 0, 0, 0.55);
+    border: 1px solid rgba(16, 185, 129, 0.35);
     box-shadow: inset 0 0 12px rgba(16, 185, 129, 0.1);
-    border-radius: 10px;
-    padding: 0.75rem 0.5rem;
+    border-radius: var(--radius-md);
+    padding: 0.5rem 0.25rem;
     text-align: center;
+    min-width: 0;
+}
+
+@media (min-width: 400px) {
+    .doomsday-digit-card { padding: 0.65rem 0.35rem; }
 }
 
 html:not(.dark) .doomsday-digit-card {
@@ -175,11 +185,20 @@ html:not(.dark) .doomsday-digit-card {
 
 .doomsday-digit-val {
     font-family: var(--font-heading);
-    font-size: 1.75rem;
+    font-size: 1.15rem;
     font-weight: 800;
     color: #10b981;
     text-shadow: 0 0 10px rgba(16, 185, 129, 0.6);
-    line-height: 1;
+    line-height: 1.15;
+    word-break: break-all;
+}
+
+@media (min-width: 400px) {
+    .doomsday-digit-val { font-size: 1.45rem; }
+}
+
+@media (min-width: 540px) {
+    .doomsday-digit-val { font-size: 1.75rem; }
 }
 
 html:not(.dark) .doomsday-digit-val {
@@ -191,19 +210,24 @@ html:not(.dark) .doomsday-digit-val {
 .doomsday-header-pill {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.35rem 0.85rem;
+    gap: 0.35rem;
+    padding: 0.35rem 0.75rem;
+    min-height: 2rem;
+    max-height: 2.15rem;
     background: rgba(16, 185, 129, 0.12);
     border: 1px solid rgba(16, 185, 129, 0.4);
-    border-radius: 9999px;
+    border-radius: var(--radius-full);
     color: #10b981;
     font-family: var(--font-tech);
     font-weight: 700;
-    font-size: 0.8rem;
-    letter-spacing: 0.08em;
+    font-size: 0.76rem;
+    letter-spacing: 0.05em;
     cursor: pointer;
-    transition: all 0.25s ease;
+    transition: all 0.2s ease;
     box-shadow: 0 0 12px rgba(16, 185, 129, 0.2);
+    flex-shrink: 0;
+    white-space: nowrap;
+    box-sizing: border-box;
 }
 
 html:not(.dark) .doomsday-header-pill {
@@ -214,19 +238,20 @@ html:not(.dark) .doomsday-header-pill {
 }
 
 .doomsday-header-pill:hover {
-    background: rgba(16, 185, 129, 0.25);
+    background: rgba(16, 185, 129, 0.22);
     border-color: #10b981;
-    transform: translateY(-1px) scale(1.03);
-    box-shadow: 0 0 20px rgba(16, 185, 129, 0.45);
+    transform: translateY(-1px);
+    box-shadow: 0 0 16px rgba(16, 185, 129, 0.4);
 }
 
 .pulse-beacon {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
+    width: 7px;
+    height: 7px;
+    border-radius: var(--radius-full);
     background: #10b981;
-    box-shadow: 0 0 10px #10b981;
+    box-shadow: 0 0 8px #10b981;
     animation: beacon-pulse 1.4s infinite ease-in-out;
+    flex-shrink: 0;
 }
 
 @keyframes beacon-pulse {
@@ -249,25 +274,13 @@ html.dark .main-header {
     border-bottom: 1px solid var(--panel-border-dark);
 }
 
-.brand-text {
-    font-family: var(--font-heading);
-    letter-spacing: 0.08em;
-    color: #10b981;
-    text-shadow: 0 0 15px rgba(16, 185, 129, 0.3);
-}
-
-html:not(.dark) .brand-text {
-    color: #047857;
-    text-shadow: none;
-}
-
 /* ==========================================================
-   3. GLASSMORPHIC PANELS & CONTROLS
+   3. PANELS, INPUTS & BUTTONS
    ========================================================== */
 .ui-panel {
     background: var(--surface-glass-light);
     border: 1px solid var(--panel-border-light);
-    border-radius: 16px;
+    border-radius: var(--radius-xl);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
@@ -281,33 +294,33 @@ html.dark .ui-panel {
 
 .ui-panel-title {
     font-family: var(--font-heading);
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     font-weight: 800;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     color: #10b981;
 }
 
-html:not(.dark) .ui-panel-title {
-    color: #047857;
-}
+html:not(.dark) .ui-panel-title { color: #047857; }
 
 .ui-input, .ui-select {
     width: 100%;
+    min-height: 2.35rem;
     background: rgba(255, 255, 255, 0.85);
     border: 1px solid rgba(16, 185, 129, 0.25);
-    border-radius: 8px;
-    padding: 0.6rem 0.85rem;
+    border-radius: var(--radius-md);
+    padding: 0.45rem 0.75rem;
     font-family: var(--font-tech);
     font-size: 0.9rem;
     font-weight: 600;
     color: var(--text-primary-light);
     transition: all 0.2s ease;
+    line-height: 1.25;
 }
 
 html.dark .ui-input, html.dark .ui-select {
-    background: rgba(7, 10, 18, 0.7);
-    border: 1px solid rgba(16, 185, 129, 0.2);
+    background: rgba(7, 10, 18, 0.75);
+    border: 1px solid rgba(16, 185, 129, 0.22);
     color: var(--text-primary-dark);
 }
 
@@ -322,18 +335,23 @@ html.dark .ui-input, html.dark .ui-select {
     font-family: var(--font-tech);
     font-weight: 700;
     font-size: 0.8rem;
-    letter-spacing: 0.04em;
-    padding: 0.35rem 0.7rem;
-    border-radius: 8px;
+    letter-spacing: 0.03em;
+    padding: 0.35rem 0.65rem;
+    min-height: 2rem;
+    border-radius: var(--radius-md);
     border: 1px solid rgba(148, 163, 184, 0.25);
     background: rgba(255, 255, 255, 0.6);
     color: var(--text-secondary-light);
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 0.35rem;
     cursor: pointer;
     transition: all 0.2s ease;
     user-select: none;
+    line-height: 1.2;
+    flex-shrink: 0;
+    white-space: nowrap;
 }
 
 html.dark .media-pill {
@@ -361,24 +379,23 @@ html:not(.dark) .media-pill.active {
 }
 
 /* ==========================================================
-   4. TIMELINE RAIL & CARDS
+   4. TIMELINE RAIL & CARDS (PIXEL-PERFECT ALIGNMENT)
    ========================================================== */
 .timeline-rail {
     position: relative;
-    padding-left: 1.75rem;
-}
-
-@media (min-width: 640px) {
-    .timeline-rail { padding-left: 2.25rem; }
+    padding-left: 0;
 }
 
 .timeline-rail::before {
     content: '';
     position: absolute;
-    top: 0; bottom: 0; left: 0.5rem;
+    top: 0.5rem;
+    bottom: 0.5rem;
+    left: 0.5rem;
     width: 2px;
+    transform: translateX(-50%);
     background: linear-gradient(to bottom, 
-        rgba(16, 185, 129, 0.7) 0%, 
+        rgba(16, 185, 129, 0.8) 0%, 
         rgba(16, 185, 129, 0.35) 50%,
         rgba(16, 185, 129, 0.8) 100%
     );
@@ -386,54 +403,73 @@ html:not(.dark) .media-pill.active {
 }
 
 @media (min-width: 640px) {
-    .timeline-rail::before { left: 0.75rem; }
+    .timeline-rail::before {
+        left: 0.75rem;
+    }
 }
 
 /* Era Header */
 .era-divider {
     position: relative;
-    margin: 2.5rem 0 1.25rem -1.75rem;
-    padding-left: 1.75rem;
+    padding-left: 1.35rem;
+    margin: 2rem 0 0.85rem 0;
 }
 
 @media (min-width: 640px) {
     .era-divider {
-        margin: 2.5rem 0 1.25rem -2.25rem;
-        padding-left: 2.25rem;
+        padding-left: 2rem;
+        margin: 2.5rem 0 1.15rem 0;
     }
 }
 
 .era-banner {
     display: inline-flex;
     align-items: center;
-    gap: 0.65rem;
-    padding: 0.45rem 1.15rem;
+    gap: 0.45rem;
+    padding: 0.35rem 0.85rem;
     background: rgba(16, 185, 129, 0.12);
-    border-left: 4px solid #10b981;
-    border-radius: 0 10px 10px 0;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    border-left: 3px solid #10b981;
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
 }
 
 .era-title {
     font-family: var(--font-heading);
-    font-size: 0.95rem;
+    font-size: 0.82rem;
     font-weight: 800;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.06em;
     color: #10b981;
     text-transform: uppercase;
 }
 
-html:not(.dark) .era-title {
-    color: #047857;
+@media (min-width: 640px) {
+    .era-title { font-size: 0.88rem; }
 }
 
-/* Timeline Node */
+html:not(.dark) .era-title { color: #047857; }
+
+/* Timeline Item & Node */
+.timeline-item {
+    position: relative;
+    padding-left: 1.35rem;
+    margin-bottom: 0.75rem;
+}
+
+@media (min-width: 640px) {
+    .timeline-item {
+        padding-left: 2rem;
+        margin-bottom: 0.9rem;
+    }
+}
+
 .timeline-node {
     position: absolute;
-    left: 0.22rem;
-    top: 1.35rem;
-    width: 12px; height: 12px;
-    border-radius: 50%;
+    left: 0.5rem;
+    top: 1.25rem;
+    transform: translate(-50%, -50%);
+    width: 12px;
+    height: 12px;
+    border-radius: var(--radius-full);
     background: var(--surface-dark);
     border: 2px solid #10b981;
     box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
@@ -443,8 +479,9 @@ html:not(.dark) .era-title {
 
 @media (min-width: 640px) {
     .timeline-node {
-        left: 0.45rem;
-        width: 13px; height: 13px;
+        left: 0.75rem;
+        width: 14px;
+        height: 14px;
     }
 }
 
@@ -454,7 +491,7 @@ html:not(.dark) .timeline-node {
 }
 
 .timeline-item:hover .timeline-node {
-    transform: scale(1.35);
+    transform: translate(-50%, -50%) scale(1.3);
     background: #10b981;
     box-shadow: 0 0 14px #10b981;
 }
@@ -462,17 +499,23 @@ html:not(.dark) .timeline-node {
 /* Timeline Cards */
 .timeline-card {
     background: var(--surface-glass-light);
-    border: 1px solid rgba(16, 185, 129, 0.18);
-    border-radius: 12px;
-    padding: 1rem 1.15rem;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    border-radius: var(--radius-lg);
+    padding: 0.75rem 0.85rem;
+    transition: all 0.2s ease;
     position: relative;
     cursor: default;
+    width: 100%;
+    min-width: 0;
+}
+
+@media (min-width: 640px) {
+    .timeline-card { padding: 0.95rem 1.15rem; }
 }
 
 html.dark .timeline-card {
     background: var(--surface-glass-dark);
-    border: 1px solid rgba(16, 185, 129, 0.15);
+    border: 1px solid rgba(16, 185, 129, 0.16);
 }
 
 .timeline-card:hover {
@@ -481,32 +524,17 @@ html.dark .timeline-card {
     box-shadow: 0 6px 20px rgba(16, 185, 129, 0.18);
 }
 
-/* Special highlight for Avengers: Doomsday card */
+/* Avengers: Doomsday Card Glow */
 .timeline-card[data-title*="Doomsday"] {
     border-color: #10b981;
-    box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.32);
     cursor: pointer;
-}
-.timeline-card[data-title*="Doomsday"]::after {
-    content: '⚡ CLICK TO VIEW PROTOCOL';
-    position: absolute;
-    right: 3.5rem;
-    top: 0.75rem;
-    font-family: var(--font-tech);
-    font-size: 0.65rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    color: #10b981;
-    background: rgba(16, 185, 129, 0.15);
-    border: 1px solid rgba(16, 185, 129, 0.4);
-    padding: 0.15rem 0.45rem;
-    border-radius: 4px;
 }
 
 /* Watched State */
 .timeline-card.watched {
-    opacity: 0.6;
-    background: rgba(13, 19, 34, 0.4);
+    opacity: 0.55;
+    background: rgba(13, 19, 34, 0.35);
 }
 .timeline-card.watched .card-title {
     text-decoration: line-through;
@@ -516,21 +544,22 @@ html.dark .timeline-card {
 /* Badges */
 .badge-year {
     font-family: var(--font-heading);
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     font-weight: 700;
     color: #10b981;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
 }
 
 html:not(.dark) .badge-year { color: #047857; }
 
 .badge-tag {
     font-family: var(--font-tech);
-    font-size: 0.7rem;
+    font-size: 0.68rem;
     font-weight: 700;
-    letter-spacing: 0.05em;
-    padding: 0.2rem 0.5rem;
-    border-radius: 6px;
+    letter-spacing: 0.04em;
+    padding: 0.15rem 0.45rem;
+    border-radius: var(--radius-sm);
     background: rgba(148, 163, 184, 0.1);
     border: 1px solid rgba(148, 163, 184, 0.2);
     color: var(--text-secondary-dark);
@@ -538,24 +567,42 @@ html:not(.dark) .badge-year { color: #047857; }
     align-items: center;
     gap: 0.25rem;
     text-transform: uppercase;
+    white-space: nowrap;
 }
 
-html:not(.dark) .badge-tag {
-    color: var(--text-secondary-light);
+html:not(.dark) .badge-tag { color: var(--text-secondary-light); }
+
+.badge-doomsday {
+    font-family: var(--font-tech);
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    padding: 0.15rem 0.45rem;
+    border-radius: var(--radius-sm);
+    background: rgba(16, 185, 129, 0.2);
+    border: 1px solid #10b981;
+    color: #10b981;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    text-transform: uppercase;
+    white-space: nowrap;
+    animation: beacon-pulse 2s infinite ease-in-out;
 }
 
 /* Tactical Checkbox */
 .custom-checkbox {
     appearance: none;
-    width: 22px;
-    height: 22px;
-    border-radius: 6px;
+    width: 20px;
+    height: 20px;
+    border-radius: var(--radius-sm);
     border: 2px solid rgba(16, 185, 129, 0.35);
     background: transparent;
     cursor: pointer;
     transition: all 0.2s ease;
     display: grid;
     place-content: center;
+    flex-shrink: 0;
 }
 
 .custom-checkbox:hover {
@@ -572,7 +619,7 @@ html:not(.dark) .badge-tag {
 .custom-checkbox:checked::before {
     content: '✓';
     color: #070a12;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 900;
 }
 
@@ -582,7 +629,7 @@ html:not(.dark) .badge-tag {
 .mobile-drawer-backdrop {
     position: fixed;
     inset: 0;
-    background: rgba(5, 7, 14, 0.75);
+    background: rgba(5, 7, 14, 0.82);
     backdrop-filter: blur(8px);
     z-index: 80;
     opacity: 0;
@@ -598,16 +645,17 @@ html:not(.dark) .badge-tag {
 .mobile-drawer {
     position: fixed;
     bottom: 0; left: 0; right: 0;
-    background: linear-gradient(180deg, rgba(13, 19, 34, 0.98) 0%, rgba(7, 10, 18, 0.99) 100%);
+    background: linear-gradient(180deg, rgba(13, 19, 34, 0.99) 0%, rgba(7, 10, 18, 0.99) 100%);
     border-top: 2px solid #10b981;
-    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.6);
-    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.7);
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
     max-height: 85vh;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     z-index: 90;
     transform: translateY(100%);
-    transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
-    padding: 1.25rem 1.25rem 2.5rem 1.25rem;
+    transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1);
+    padding: 1.25rem 1.25rem 5rem 1.25rem;
 }
 
 html:not(.dark) .mobile-drawer {
@@ -620,11 +668,11 @@ html:not(.dark) .mobile-drawer {
 }
 
 .drawer-drag-handle {
-    width: 44px;
-    height: 5px;
+    width: 40px;
+    height: 4px;
     background: rgba(148, 163, 184, 0.3);
-    border-radius: 9999px;
-    margin: 0 auto 1.25rem auto;
+    border-radius: var(--radius-full);
+    margin: 0 auto 1rem auto;
 }
 
 /* Floating Mobile Action Button */
@@ -636,20 +684,22 @@ html:not(.dark) .mobile-drawer {
     background: #10b981;
     color: #070a12;
     border: none;
-    border-radius: 9999px;
-    padding: 0.65rem 1.5rem;
+    border-radius: var(--radius-full);
+    padding: 0.6rem 1.35rem;
+    min-height: 2.6rem;
     font-family: var(--font-tech);
     font-weight: 800;
-    font-size: 0.9rem;
-    letter-spacing: 0.08em;
+    font-size: 0.88rem;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
     box-shadow: 0 4px 20px rgba(16, 185, 129, 0.5);
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.45rem;
     z-index: 50;
     cursor: pointer;
     transition: all 0.2s ease;
+    white-space: nowrap;
 }
 
 .mobile-floating-filter-btn:hover {
@@ -664,8 +714,8 @@ html:not(.dark) .mobile-drawer {
 /* Progress bar */
 .progress-track {
     background: rgba(148, 163, 184, 0.15);
-    border-radius: 9999px;
-    height: 10px;
+    border-radius: var(--radius-full);
+    height: 9px;
     overflow: hidden;
 }
 .progress-fill {

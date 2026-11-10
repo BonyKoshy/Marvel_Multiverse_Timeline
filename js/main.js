@@ -319,18 +319,19 @@ document.addEventListener("DOMContentLoaded", () => {
       const isDoomsday = item.title.includes("Doomsday");
 
       const cardDiv = document.createElement("div");
-      cardDiv.className = "timeline-item relative mb-4 pl-7 sm:pl-8";
+      cardDiv.className = "timeline-item";
       cardDiv.innerHTML = `
         <div class="timeline-node"></div>
         <div data-title="${item.title}" class="timeline-card ${isWatched ? "watched" : ""}">
-          <div class="flex justify-between items-start gap-3">
+          <div class="flex justify-between items-start gap-2.5 sm:gap-3">
             <div class="flex-1 min-w-0">
               <div class="flex items-center gap-1.5 flex-wrap mb-1.5">
                 <span class="badge-year">⏱️ ${item.year}</span>
                 <span class="badge-tag">🌐 ${item.universe}</span>
                 <span class="badge-tag">${typeIcon} ${item.type}</span>
+                ${isDoomsday ? '<span class="badge-doomsday">⚡ DOOMSDAY</span>' : ''}
               </div>
-              <h4 class="card-title font-orbitron font-bold text-sm sm:text-base text-slate-900 dark:text-slate-100 tracking-wide truncate">
+              <h4 class="card-title font-orbitron font-bold text-xs xs:text-sm sm:text-base text-slate-900 dark:text-slate-100 tracking-wide leading-snug break-words">
                 ${item.title}
               </h4>
             </div>
@@ -409,7 +410,7 @@ document.addEventListener("DOMContentLoaded", () => {
               label: "Entries",
               data: [],
               backgroundColor: accent,
-              borderRadius: 4,
+              borderRadius: 6,
               borderWidth: 0,
             },
           ],
