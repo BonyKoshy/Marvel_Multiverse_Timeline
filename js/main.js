@@ -29,19 +29,37 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Mobile Drawer Selectors
   const openMobileFilterBtn = document.getElementById("open-mobile-filter-btn");
-  const closeMobileDrawerBtn = document.getElementById("close-mobile-drawer-btn");
-  const applyMobileFilterBtn = document.getElementById("apply-mobile-filter-btn");
-  const mobileDrawerBackdrop = document.getElementById("mobile-drawer-backdrop");
+  const closeMobileDrawerBtn = document.getElementById(
+    "close-mobile-drawer-btn",
+  );
+  const applyMobileFilterBtn = document.getElementById(
+    "apply-mobile-filter-btn",
+  );
+  const mobileDrawerBackdrop = document.getElementById(
+    "mobile-drawer-backdrop",
+  );
   const mobileSearchInput = document.getElementById("mobile-search-input");
   const mobileEraSelect = document.getElementById("mobile-era-select");
-  const mobileUniverseSelect = document.getElementById("mobile-universe-select");
-  const mobileTypeButtonsContainer = document.getElementById("mobile-type-buttons");
-  const mobileUnwatchedToggle = document.getElementById("mobile-unwatched-toggle");
+  const mobileUniverseSelect = document.getElementById(
+    "mobile-universe-select",
+  );
+  const mobileTypeButtonsContainer = document.getElementById(
+    "mobile-type-buttons",
+  );
+  const mobileUnwatchedToggle = document.getElementById(
+    "mobile-unwatched-toggle",
+  );
 
   // Doomsday Modal & Header Pill Selectors
-  const doomsdayModalBackdrop = document.getElementById("doomsday-modal-backdrop");
-  const closeDoomsdayModalBtn = document.getElementById("close-doomsday-modal-btn");
-  const minimizeDoomsdayModalBtn = document.getElementById("minimize-doomsday-modal-btn");
+  const doomsdayModalBackdrop = document.getElementById(
+    "doomsday-modal-backdrop",
+  );
+  const closeDoomsdayModalBtn = document.getElementById(
+    "close-doomsday-modal-btn",
+  );
+  const minimizeDoomsdayModalBtn = document.getElementById(
+    "minimize-doomsday-modal-btn",
+  );
   const doomsdayTriggerBtn = document.getElementById("doomsday-trigger-btn");
   const doomHeaderCountdown = document.getElementById("doom-header-countdown");
   const doomModalDays = document.getElementById("doom-modal-days");
@@ -52,7 +70,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // Theme & Analytics Selectors
   const darkModeToggle = document.getElementById("dark-mode-toggle");
   const themeToggleDarkIcon = document.getElementById("theme-toggle-dark-icon");
-  const themeToggleLightIcon = document.getElementById("theme-toggle-light-icon");
+  const themeToggleLightIcon = document.getElementById(
+    "theme-toggle-light-icon",
+  );
   const toggleAnalyticsBtn = document.getElementById("toggle-analytics-btn");
   const analyticsSection = document.getElementById("analytics-section");
   const markAllWatchedBtn = document.getElementById("mark-all-watched-btn");
@@ -98,16 +118,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function getTypeIconName(type) {
     switch (type) {
-      case "Film": return "film";
-      case "TV Series": return "tv";
-      case "Comic": return "comic";
-      case "Short": return "short";
-      case "Animated Series": return "animated-series";
-      case "Animated Film": return "animated-film";
-      case "Animated Short": return "animated-short";
-      case "Digital": return "digital";
-      case "Special": return "special";
-      default: return "film";
+      case "Film":
+        return "film";
+      case "TV Series":
+        return "tv";
+      case "Comic":
+        return "comic";
+      case "Short":
+        return "short";
+      case "Animated Series":
+        return "animated-series";
+      case "Animated Film":
+        return "animated-film";
+      case "Animated Short":
+        return "animated-short";
+      case "Digital":
+        return "digital";
+      case "Special":
+        return "special";
+      default:
+        return "film";
     }
   }
 
@@ -150,16 +180,22 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const hours = Math.floor(
+        (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
+      );
       const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
       if (doomModalDays) doomModalDays.textContent = days.toLocaleString();
-      if (doomModalHours) doomModalHours.textContent = String(hours).padStart(2, "0");
-      if (doomModalMinutes) doomModalMinutes.textContent = String(minutes).padStart(2, "0");
-      if (doomModalSeconds) doomModalSeconds.textContent = String(seconds).padStart(2, "0");
+      if (doomModalHours)
+        doomModalHours.textContent = String(hours).padStart(2, "0");
+      if (doomModalMinutes)
+        doomModalMinutes.textContent = String(minutes).padStart(2, "0");
+      if (doomModalSeconds)
+        doomModalSeconds.textContent = String(seconds).padStart(2, "0");
 
-      if (doomHeaderCountdown) doomHeaderCountdown.textContent = `${days}d ${hours}h`;
+      if (doomHeaderCountdown)
+        doomHeaderCountdown.textContent = `${days}d ${hours}h`;
     }
 
     updateCountdown();
@@ -269,7 +305,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // ==========================================================
   function initDarkMode() {
     const savedTheme = localStorage.getItem("color-theme");
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const prefersDark = window.matchMedia(
+      "(prefers-color-scheme: dark)",
+    ).matches;
     const isDark = savedTheme === "dark" || (!savedTheme && prefersDark);
 
     if (isDark) {
@@ -299,15 +337,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const isCollapsed = localStorage.getItem("analytics-collapsed") !== "false"; // Default hidden
     if (!isCollapsed && analyticsSection) {
       analyticsSection.classList.remove("hidden");
-      toggleAnalyticsBtn.classList.add("border-emerald-500", "text-emerald-500");
+      toggleAnalyticsBtn.classList.add("active");
     }
 
     if (toggleAnalyticsBtn && analyticsSection) {
       toggleAnalyticsBtn.addEventListener("click", () => {
         const isHidden = analyticsSection.classList.toggle("hidden");
         localStorage.setItem("analytics-collapsed", isHidden ? "true" : "false");
-        toggleAnalyticsBtn.classList.toggle("border-emerald-500", !isHidden);
-        toggleAnalyticsBtn.classList.toggle("text-emerald-500", !isHidden);
+        toggleAnalyticsBtn.classList.toggle("active", !isHidden);
       });
     }
   }
@@ -352,7 +389,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function renderFormatPills(types) {
     const renderPillHTML = (type) => {
-      const icon = getSvgIcon(getTypeIconName(type), "w-3.5 h-3.5 flex-shrink-0");
+      const icon = getSvgIcon(
+        getTypeIconName(type),
+        "w-3.5 h-3.5 flex-shrink-0",
+      );
       const isSelected = selectedTypes.has(type);
       return `
         <button type="button" data-type="${type}" class="media-pill ${isSelected ? "active" : ""}">
@@ -409,10 +449,22 @@ document.addEventListener("DOMContentLoaded", () => {
       // Render Card
       const isWatched = !!watchedItems[item.title];
       const isDoomsday = item.title.includes("Doomsday");
-      const iconSvg = getSvgIcon(getTypeIconName(item.type), "w-3 h-3 flex-shrink-0");
-      const clockSvg = getSvgIcon("clock", "w-3 h-3 flex-shrink-0 text-emerald-500");
-      const globeSvg = getSvgIcon("globe", "w-3 h-3 flex-shrink-0 text-slate-400");
-      const lockSvg = getSvgIcon("lock", "w-3 h-3 flex-shrink-0 text-emerald-500");
+      const iconSvg = getSvgIcon(
+        getTypeIconName(item.type),
+        "w-3 h-3 flex-shrink-0",
+      );
+      const clockSvg = getSvgIcon(
+        "clock",
+        "w-3 h-3 flex-shrink-0 text-emerald-500",
+      );
+      const globeSvg = getSvgIcon(
+        "globe",
+        "w-3 h-3 flex-shrink-0 text-slate-400",
+      );
+      const lockSvg = getSvgIcon(
+        "lock",
+        "w-3 h-3 flex-shrink-0 text-emerald-500",
+      );
 
       // Right action: LOCKED indicator for unreleased Doomsday, or Checkbox when released
       let rightActionHTML = "";
@@ -485,7 +537,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const clearanceRank = document.getElementById("clearance-rank");
 
     if (progressBarFill) progressBarFill.style.width = `${percentage}%`;
-    if (clearancePct) clearancePct.textContent = `${percentage}% (${watchedCount}/${total})`;
+    if (clearancePct)
+      clearancePct.textContent = `${percentage}% (${watchedCount}/${total})`;
 
     // Rank text
     let rankText = "Level 1 - Civilian Contact";
@@ -505,11 +558,15 @@ document.addEventListener("DOMContentLoaded", () => {
   // ==========================================================
   function createCharts() {
     const isDark = document.documentElement.classList.contains("dark");
-    const gridColor = isDark ? "rgba(16, 185, 129, 0.08)" : "rgba(0, 0, 0, 0.05)";
+    const gridColor = isDark
+      ? "rgba(16, 185, 129, 0.08)"
+      : "rgba(0, 0, 0, 0.05)";
     const textColor = isDark ? "#94a3b8" : "#475569";
     const accent = isDark ? "#10b981" : "#059669";
 
-    const decadeCtx = document.getElementById("releasesByDecadeChart")?.getContext("2d");
+    const decadeCtx = document
+      .getElementById("releasesByDecadeChart")
+      ?.getContext("2d");
     if (decadeCtx) {
       decadeChart = new Chart(decadeCtx, {
         type: "bar",
@@ -532,11 +589,17 @@ document.addEventListener("DOMContentLoaded", () => {
             y: {
               beginAtZero: true,
               grid: { color: gridColor },
-              ticks: { color: textColor, font: { family: "Rajdhani", size: 11 } },
+              ticks: {
+                color: textColor,
+                font: { family: "Rajdhani", size: 11 },
+              },
             },
             x: {
               grid: { color: gridColor },
-              ticks: { color: textColor, font: { family: "Rajdhani", size: 11 } },
+              ticks: {
+                color: textColor,
+                font: { family: "Rajdhani", size: 11 },
+              },
             },
           },
           plugins: {
@@ -627,7 +690,9 @@ document.addEventListener("DOMContentLoaded", () => {
       return Number(a) - Number(b);
     });
 
-    decadeChart.data.labels = sortedDecades.map((d) => (d === "Ancient (BC)" ? d : `${d}s`));
+    decadeChart.data.labels = sortedDecades.map((d) =>
+      d === "Ancient (BC)" ? d : `${d}s`,
+    );
     decadeChart.data.datasets[0].data = sortedDecades.map((d) => decadeData[d]);
     decadeChart.update();
 
@@ -668,16 +733,26 @@ document.addEventListener("DOMContentLoaded", () => {
         item.era.toLowerCase().includes(searchTerm);
 
       const matchesEra = selectedEra === "all" || item.era === selectedEra;
-      const matchesUniverse = selectedUniverse === "all" || item.universe === selectedUniverse;
-      const matchesType = selectedTypes.size === 0 || selectedTypes.has(item.type);
+      const matchesUniverse =
+        selectedUniverse === "all" || item.universe === selectedUniverse;
+      const matchesType =
+        selectedTypes.size === 0 || selectedTypes.has(item.type);
       const matchesUnwatched = !unwatchedOnly || !watchedItems[item.title];
 
-      return matchesSearch && matchesEra && matchesUniverse && matchesType && matchesUnwatched;
+      return (
+        matchesSearch &&
+        matchesEra &&
+        matchesUniverse &&
+        matchesType &&
+        matchesUnwatched
+      );
     });
 
     // Sort order
     const sorted = [...filtered].sort((a, b) => {
-      return sortAscending ? a.startYear - b.startYear : b.startYear - a.startYear;
+      return sortAscending
+        ? a.startYear - b.startYear
+        : b.startYear - a.startYear;
     });
 
     renderTimeline(sorted);
@@ -766,9 +841,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Mobile drawer open/close
-    if (openMobileFilterBtn) openMobileFilterBtn.addEventListener("click", openMobileDrawer);
-    if (closeMobileDrawerBtn) closeMobileDrawerBtn.addEventListener("click", closeMobileDrawer);
-    if (applyMobileFilterBtn) applyMobileFilterBtn.addEventListener("click", closeMobileDrawer);
+    if (openMobileFilterBtn)
+      openMobileFilterBtn.addEventListener("click", openMobileDrawer);
+    if (closeMobileDrawerBtn)
+      closeMobileDrawerBtn.addEventListener("click", closeMobileDrawer);
+    if (applyMobileFilterBtn)
+      applyMobileFilterBtn.addEventListener("click", closeMobileDrawer);
     if (mobileDrawerBackdrop) {
       mobileDrawerBackdrop.addEventListener("click", (e) => {
         if (e.target === mobileDrawerBackdrop) closeMobileDrawer();
@@ -808,9 +886,11 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       // Sync active classes across desktop and mobile pills
-      document.querySelectorAll(`.media-pill[data-type="${type}"]`).forEach((b) => {
-        b.classList.toggle("active", selectedTypes.has(type));
-      });
+      document
+        .querySelectorAll(`.media-pill[data-type="${type}"]`)
+        .forEach((b) => {
+          b.classList.toggle("active", selectedTypes.has(type));
+        });
 
       applyFilters();
     };
@@ -828,7 +908,9 @@ document.addEventListener("DOMContentLoaded", () => {
     if (clearFormatsBtn) {
       clearFormatsBtn.addEventListener("click", () => {
         selectedTypes.clear();
-        document.querySelectorAll(".media-pill").forEach((b) => b.classList.remove("active"));
+        document
+          .querySelectorAll(".media-pill")
+          .forEach((b) => b.classList.remove("active"));
         applyFilters();
       });
     }
@@ -839,7 +921,12 @@ document.addEventListener("DOMContentLoaded", () => {
       const checkbox = e.target.closest(".watched-checkbox");
 
       // If user clicked Avengers: Doomsday card (outside checkbox), open the Doomsday modal!
-      if (card && !checkbox && card.dataset.title && card.dataset.title.includes("Doomsday")) {
+      if (
+        card &&
+        !checkbox &&
+        card.dataset.title &&
+        card.dataset.title.includes("Doomsday")
+      ) {
         openDoomsdayModal();
         return;
       }
