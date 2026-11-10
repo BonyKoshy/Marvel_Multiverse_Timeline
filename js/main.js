@@ -343,7 +343,10 @@ document.addEventListener("DOMContentLoaded", () => {
     if (toggleAnalyticsBtn && analyticsSection) {
       toggleAnalyticsBtn.addEventListener("click", () => {
         const isHidden = analyticsSection.classList.toggle("hidden");
-        localStorage.setItem("analytics-collapsed", isHidden ? "true" : "false");
+        localStorage.setItem(
+          "analytics-collapsed",
+          isHidden ? "true" : "false",
+        );
         toggleAnalyticsBtn.classList.toggle("active", !isHidden);
       });
     }
